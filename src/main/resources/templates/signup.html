@@ -1,0 +1,61 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+
+    <link rel="stylesheet" th:href="@{login-signup/assets/css/styles.css}">
+
+    <title>Login form - Bedimcode</title>
+</head>
+<body>
+<div class="login" style="background: linear-gradient(to right top, #7aaab2, #67a7b0, #52a5ad, #38a2a9, #009fa4);">
+
+
+    <form th:action="@{/signup}" method="post" class="login__form">
+        <h1 class="login__title">Sign Up</h1>
+
+        <div class="login__inputs">
+            <div class="login__box">
+                <input name="name" type="text" placeholder="Name" required class="login__input">
+
+            </div>
+
+            <div class="login__inputs">
+                <div class="login__box">
+                    <input name="email" type="email" placeholder="Email ID" required class="login__input">
+                    <i class="ri-mail-fill"></i>
+                </div>
+
+                <div class="login__box">
+                    <input type="password" placeholder="Password" name="password" required class="login__input">
+                    <i class="ri-lock-2-fill"></i>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+        <button type="submit" class="login__button">Sign Up</button>
+        <p style="margin-left: 47% ; font-size: 20px;">or</p>
+        <br>
+        <div style="display: flex; justify-content: center; ">
+            <a style="color: white;" href="#" class="aoth2_google" ><img th:src="@{login-signup/assets/img/icons8-google.svg}"  alt=""><span>google</span></a>
+        </div>
+        <br>
+
+
+        <div class="login__register">
+            have an account? <a href="/signup">Login</a>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
