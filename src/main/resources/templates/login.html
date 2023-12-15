@@ -13,24 +13,42 @@
     <title>Login</title>
 </head>
 <body>
-<div class="login" style="background: linear-gradient(to right top, #7aaab2, #67a7b0, #52a5ad, #38a2a9, #009fa4);">
-    <form action="" class="login__form">
+<div  class="login" style="background: linear-gradient(to right top, #7aaab2, #67a7b0, #52a5ad, #38a2a9, #009fa4);height: 100vh">
+
+    <form th:action="@{/login}" class="login__form" method="post">
+
+        <div th:if="${verificationStatus}">
+            <p style="color: white" >
+                Successfuly register user
+            </p>
+        </div>
+        <div th:if="${loginError}">
+            <p th:text="${loginError}" style="color: red" >
+
+            </p>
+        </div>
+        <div th:if="${UserBlocked}">
+            <p th:text="${UserBlocked}" style="color: red" >
+
+            </p>
+        </div>
+
         <h1 class="login__title">Login</h1>
         <div class="login__inputs">
             <div class="login__box">
-                <input type="email" placeholder="Email ID" required class="login__input">
+                <input type="email" name="username" placeholder="Email ID" required class="login__input">
                 <i class="ri-mail-fill"></i>
             </div>
 
             <div class="login__box">
-                <input type="password" placeholder="Password" required class="login__input">
+                <input type="password"  name="password" placeholder="Password" required class="login__input">
                 <i class="ri-lock-2-fill"></i>
             </div>
         </div>
 
         <div class="login__check">
             <div class="login__check-box">
-                <input type="checkbox" class="login__check-input" id="user-check">
+                <input type="checkbox" name="remember-me" class="login__check-input" id="user-check">
                 <label for="user-check" class="login__check-label">Remember me</label>
             </div>
 
@@ -38,12 +56,12 @@
         </div>
 
         <button type="submit" class="login__button">Login</button>
-        <p style="margin-left: 47% ; font-size: 20px;">or</p>
-        <br>
+<!--        <p style="margin-left: 47% ; font-size: 20px;">or</p>-->
+<!--        <br>-->
 
-        <div style="display: flex; justify-content: center; ">
-            <a style="color: white;" href="#" class="aoth2_google" ><img th:src="@{login-signup/assets/img/icons8-google.svg}"  alt=""><span>google</span></a>
-        </div>
+<!--        <div style="display: flex; justify-content: center; ">-->
+<!--            <a style="color: white;" th:href="@{/login/aouth2/code/google}" class="aoth2_google" ><img th:src="@{login-signup/assets/img/icons8-google.svg}"  alt=""><span>google</span></a>-->
+<!--        </div>-->
         <br>
 
 

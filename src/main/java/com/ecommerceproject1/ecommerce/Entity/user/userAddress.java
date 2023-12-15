@@ -1,4 +1,4 @@
-package com.ecommerceproject1.ecommerce.Entity;
+package com.ecommerceproject1.ecommerce.Entity.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,16 +10,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo {
+@NoArgsConstructor
+
+public class userAddress {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-    private String name;
-    private String email;
-    private String password;
-    private String number;
-    private String role;
-
+    private Long id;
 }

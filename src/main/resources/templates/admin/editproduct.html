@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/styles/admin/style.css}">
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    .box {
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      background-color: white;
+
+    }
+    .image-section{
+      display: none;
+    }
+    .product-image{
+      height: 125px;
+      width: 125px;
+    }
+    .delete-button{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .image-section-alt{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .product-image-alt{
+      height: 0px;
+      width: 0px;
+    }
+    .delete-button-alt{
+      display: none;
+    }
+  </style>
+  <title>Nexus Cart</title>
+</head>
+<body>
+
+
+
+
+
+
+<!--    <div class="bg-success mt-2 pt-1 text-white text-center fw-semibold" style="height:30px;border-radius:5px;"-->
+<!--         th:if="${message}" th:text="${message}"></div>-->
+<!--  </div>-->
+  <div class="container-fluid mt-5">
+    <form enctype="multipart/form-data" method="post"
+          th:action="@{'/admin/product/editProduct/' + ${product.productID}}">
+      <div class="box p-5">
+        <h4>General Information</h4>
+        <div class="col-8 mt-3">
+          <label class="form-label" for="product_name">Product Name</label>
+          <input class="form-control bg-body-tertiary" id="product_name" name="productName"
+                 placeholder="Enter your product name" required th:value="${product.productName}" type="text">
+        </div>
+        <div class="col-8 mb-5 mt-3">
+          <label for="description">Description</label>
+          <textarea class="form-control bg-body-tertiary" id="description" name="description"
+                    placeholder="Enter product description"
+                    th:text="${product.description}" th:value="${product.description}" type="text"></textarea>
+        </div>
+
+
+
+      </div>
+      <div class="box p-5 mt-5">
+        <h4>Images</h4>
+        <div class="mt-3 mb-5 d-flex justify-content-center gap-5">
+          <!--     Image 1   -->
+          <div >
+            <label class="form-label image-section" for="imageFile1" id="image-section-1">
+              <svg id="addphoto" style="width: 80px; height: 80px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                <path class="color11111 svgShape" d="M21.02 5H19V2.98c0-.54-.44-.98-.98-.98h-.03c-.55 0-.99.44-.99.98V5h-2.01c-.54 0-.98.44-.99.98v.03c0 .55.44.99.99.99H17v2.01c0 .54.44.99.99.98h.03c.54 0 .98-.44.98-.98V7h2.02c.54 0 .98-.44.98-.98v-.04c0-.54-.44-.98-.98-.98zM16 9.01V8h-1.01c-.53 0-1.03-.21-1.41-.58-.37-.38-.58-.88-.58-1.44 0-.36.1-.69.27-.98H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.28c-.3.17-.64.28-1.02.28-1.09-.01-1.98-.9-1.98-1.99zM15.96 19H6c-.41 0-.65-.47-.4-.8l1.98-2.63c.21-.28.62-.26.82.02L10 18l2.61-3.48c.2-.26.59-.27.79-.01l2.95 3.68c.26.33.03.81-.39.81z" fill="#E73C17"></path>
+              </svg>
+            </label>
+            <input accept="image/*" class="form-control image d-none" id="imageFile1" name="productImages"
+                   onchange="previewImage('imageFile1','img1','image-section-1','delete-button-1')" type="file"/>
+            <div class="d-flex flex-column">
+              <div>
+                <img class="product-image" id="img1" th:src="@{'/uploads/' + ${product.imagesPath[0]}}" >
+              </div>
+              <div class="mt-2">
+                <a class="btn btn-danger delete-button" id="delete-button-1" onclick="deleteImage('imageFile1', 'img1', 'image-section-1','delete-button-1')" style="height:20px;" >
+                  <i class="bx bx-trash"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--     Image 2   -->
+          <div >
+            <label class="form-label image-section" for="imageFile2" id="image-section-2">
+              <svg id="addphoto" style="width: 80px; height: 80px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                <path class="color11111 svgShape" d="M21.02 5H19V2.98c0-.54-.44-.98-.98-.98h-.03c-.55 0-.99.44-.99.98V5h-2.01c-.54 0-.98.44-.99.98v.03c0 .55.44.99.99.99H17v2.01c0 .54.44.99.99.98h.03c.54 0 .98-.44.98-.98V7h2.02c.54 0 .98-.44.98-.98v-.04c0-.54-.44-.98-.98-.98zM16 9.01V8h-1.01c-.53 0-1.03-.21-1.41-.58-.37-.38-.58-.88-.58-1.44 0-.36.1-.69.27-.98H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.28c-.3.17-.64.28-1.02.28-1.09-.01-1.98-.9-1.98-1.99zM15.96 19H6c-.41 0-.65-.47-.4-.8l1.98-2.63c.21-.28.62-.26.82.02L10 18l2.61-3.48c.2-.26.59-.27.79-.01l2.95 3.68c.26.33.03.81-.39.81z" fill="#E73C17"></path>
+              </svg>
+            </label>
+            <input accept="image/*" class="form-control image d-none" id="imageFile2" name="productImages" onchange="previewImage('imageFile2','img2','image-section-2','delete-button-2')"
+                   type="file"/>
+            <div class="d-flex flex-column">
+              <div>
+                <img class="product-image" id="img2" th:src="@{'/uploads/' + ${product.imagesPath[1]}}" />
+              </div>
+              <div class="mt-2">
+                <a class="btn btn-danger delete-button" id="delete-button-2" onclick="deleteImage('imageFile2', 'img2', 'image-section-2','delete-button-2')" >
+                  <i class="bx bx-trash"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--                        Image 3   -->
+          <div >
+            <label class="form-label image-section" for="imageFile3" id="image-section-3">
+              <svg id="addphoto" style="width: 80px; height: 80px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                <path class="color11111 svgShape" d="M21.02 5H19V2.98c0-.54-.44-.98-.98-.98h-.03c-.55 0-.99.44-.99.98V5h-2.01c-.54 0-.98.44-.99.98v.03c0 .55.44.99.99.99H17v2.01c0 .54.44.99.99.98h.03c.54 0 .98-.44.98-.98V7h2.02c.54 0 .98-.44.98-.98v-.04c0-.54-.44-.98-.98-.98zM16 9.01V8h-1.01c-.53 0-1.03-.21-1.41-.58-.37-.38-.58-.88-.58-1.44 0-.36.1-.69.27-.98H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.28c-.3.17-.64.28-1.02.28-1.09-.01-1.98-.9-1.98-1.99zM15.96 19H6c-.41 0-.65-.47-.4-.8l1.98-2.63c.21-.28.62-.26.82.02L10 18l2.61-3.48c.2-.26.59-.27.79-.01l2.95 3.68c.26.33.03.81-.39.81z" fill="#E73C17"></path>
+              </svg>
+            </label>
+            <input accept="image/*" class="form-control image d-none" id="imageFile3" name="productImages" onchange="previewImage('imageFile3','img3','image-section-3','delete-button-3')"
+                   type="file"/>
+            <div class="d-flex flex-column">
+              <div>
+                <img class="product-image" id="img3" th:src="@{'/uploads/' + ${product.imagesPath[2]}}" >
+              </div>
+              <div class="mt-2">
+                <a class="btn btn-danger delete-button" id="delete-button-3" onclick="deleteImage('imageFile3', 'img3', 'image-section-3','delete-button-3')" style="height:20px;" >
+                  <i class="bx bx-trash"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="box p-5 mt-5">
+          <h4>Pricing</h4>
+          <div class="col-8 mt-3 mb-5">
+            <label class="form-label" for="price"> price</label>
+            <input class="form-control bg-body-tertiary" id="price" name="price"
+                   placeholder="Enter price for your product" required step="0.01"
+                   th:value="${product.price}" type="number">
+          </div>
+
+        </div>
+        <div class="box p-5 mt-5">
+          <h4>Stock</h4>
+          <div class="col-8 mt-3 mb-5">
+            <label class="form-label" for="stock">Product Quantity</label>
+            <input class="form-control bg-body-tertiary" id="stock" name="stock"
+                   placeholder="Enter price for your product" required th:value="${product.stock}" type="number">
+          </div>
+        </div>
+        <div class="box p-5 mt-5">
+          <h4>Brand</h4>
+          <div class="col-3 mt-3 mb-5 item-key words">
+            <label class="form-label" for="brand">Product brand</label>
+            <select aria-label="Default select example" class="form-select" id="brand" name="brandId" required>
+              <option  th:text="${product.getBrand().getBrandName()}"
+
+                       th:value="${product.getBrand().getBrandId()}">
+              </option>
+
+              <option th:each="brand : ${brands}" th:text="${brand.brandName}"
+                      th:unless="${brand.brandName == product.getBrand().getBrandName()}" th:value="${brand.brandId}">
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="box p-5 mt-5">
+          <h4>Category</h4>
+          <div class="col-3 mt-3 mb-5 item-key words">
+            <label class="form-label" for="category">Product category</label>
+            <select aria-label="Default select example" class="form-select" id="category" name="categoryId" required>
+              <option  th:text="${product.getCategory().getCategoryName()}"
+
+                      th:value="${product.getCategory().getCategoryId()}">
+              </option>
+
+              <option th:each="category : ${categories}" th:text="${category.categoryName}"
+                      th:unless="${category.categoryName == product.getCategory().getCategoryName()}"
+                      th:value="${category.categoryId}">
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="product-button-div ms-2 mb-5 mt-5">
+          <input class="add-product-btn" type="submit" value="Confirm Edit">
+        </div>
+    </form>
+  </div>
+</main>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script th:src="@{/admin/script/editProductScript.js}" type="text/javascript"></script>
+</body>
+
+</html>

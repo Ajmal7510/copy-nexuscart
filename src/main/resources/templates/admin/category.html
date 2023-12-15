@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  >
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>admin panel</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/admin/css/bootstrap.min.css}">
+    <!----css3---->
+    <link rel="stylesheet" th:href="@{/admin/css/custom.css}">
+    <!--font awsom-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <!--google fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+    <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+
+</head>
+<body>
+
+
+<div class="wrapper">
+
+
+    <div class="body-overlay"></div>
+
+    <!-------------------------sidebar------------>
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><img src="img/logo.png" class="img-fluid"/><span>Nexus Cart</span></h3>
+        </div>
+        <ul class="list-unstyled components">
+
+            <li  class="">
+                <a th:href="@{/admin/dashboard}" class="dashboard"><i class="material-icons">dashboard</i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <li  class="">
+
+                <a th:href="@{/admin/userlist}" class="dashboard" >
+                    <i class="fa-solid fa-user"></i>
+                    <span>User List</span></a>
+            </li>
+
+
+            <li class="">
+                <a th:href="@{/admin/product}"><i class="fa-brands fa-product-hunt"></i>Product </a>
+            </li>
+
+            <li  class="active">
+                <a th:href="@{/admin/category}"><i class="fa-solid fa-list" style="color: #18263f;"></i>Catorgery
+                </a>
+            </li>
+
+
+        </ul>
+
+
+    </nav>
+
+
+
+
+    <!--------page-content---------------->
+
+    <div id="content">
+
+        <!--top--navbar----design--------->
+
+        <div class="top-navbar">
+            <div class="xp-topbar">
+
+                <!-- Start XP Row -->
+                <div class="row">
+                    <!-- Start XP Col -->
+                    <div class="col-2 col-md-1 col-lg-1 order-2 order-md-1 align-self-center">
+                        <div class="xp-menubar">
+                               <span class="material-icons text-white">signal_cellular_alt
+							   </span>
+                        </div>
+                    </div>
+                    <!-- End XP Col -->
+
+                    <!-- Start XP Col -->
+                    <div class="col-md-5 col-lg-3 order-3 order-md-2">
+                        <div class="xp-searchbar">
+                            <form>
+                                <div class="input-group">
+                                    <input type="search" class="form-control"
+                                           placeholder="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn" type="submit"
+                                                id="button-addon2">GO</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- End XP Col -->
+
+                    <!-- Start XP Col -->
+                    <div class="col-10 col-md-6 col-lg-8 order-1 order-md-3">
+                        <div class="xp-profilebar text-right">
+                            <nav class="navbar p-0">
+                                <ul class="nav navbar-nav flex-row ml-auto">
+
+                                    <li class="nav-item">
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link" href="#" data-toggle="dropdown">
+                                            <img src="img/user.jpg" style="width:40px; border-radius:50%;"/>
+                                            <span class="xp-user-live"></span>
+                                        </a>
+                                        <ul class="dropdown-menu small-menu">
+                                            <li>
+                                                <a href="#">
+                                                    <span class="material-icons">person_outline</span>Profile
+
+                                                </a>
+                                            </li>
+                                            <li>
+
+                                            </li>
+                                            <li>
+                                                <form th:action="@{/logout}" method="post">
+                                                    <a href="#"><span class="material-icons">
+logout</span> <button style="width: 0;height: 0" type="submit">Logout</button> </a>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+
+                            </nav>
+
+                        </div>
+                    </div>
+                    <!-- End XP Col -->
+
+                </div>
+                <!-- End XP Row -->
+
+            </div>
+            <div class="xp-breadcrumbbar text-center">
+                <h4 class="page-title"></h4>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Category</a></li>
+
+                </ol>
+            </div>
+
+        </div>
+
+
+
+        <!--------main-content------------->
+        <!--catogory list-->
+        <div style="margin-left: 30px" th:if="${categoryexist}">
+            <p style="color: red" th:text="${categoryexist}"></p>
+        </div>
+        <div th:if="${inputError}" style="margin-left: 30px">
+            <p style="color: red" th:text="${inputError}"></p>
+        </div>
+        <div th:if="${categoryAddSuccess}" style="margin-left: 30px">
+            <p style="color: green" th:text="${categoryAddSuccess}"></p>
+        </div>
+        <div th:if="${delmessage}" style="margin-left: 30px">
+            <p style="color: red" th:text="${delmessage}"></p>
+        </div>
+
+        <h5 style="margin-left: 50px;font-family: sans-serif">Category List </h5>
+
+
+        <table class="table table-bordered" style="width: 500px;margin-left: 50px;">
+            <thead>
+            <tr>
+
+                <th scope="col">Category Name</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody th:each="category : ${categories}">
+            <tr>
+                <td th:text="${category.categoryName}"></td>
+                <td>
+                    <form class="d-inline" method="post" th:action="@{'/admin/category/deleteCategory/' + ${category.categoryId}}">
+                        <span class=""><button class="delete btn" data-target="#deleteModal" data-toggle="modal" id="categoryDelee" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                  </button></span>
+                    </form>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+
+        <!-- modal add catogery-->
+        <button style="margin-left: 30px" type="button" class="btn btn-primary" data-toggle="modal" data-target="#categoryModal">
+            Add Category
+        </button>
+
+        <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form inside the modal -->
+                        <form th:action="@{category/saveCategory}" method="post">
+                            <div class="form-group">
+                                <label for="categoryName">Category Name:</label>
+                                <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Category</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Modal HTML -->
+
+        <!--end of category->
+
+<!-       <!-barnd starting->-->
+        <div style="margin-left: 30px" th:if="${brandexist}">
+            <p style="color: red" th:text="${brandexist}"></p>
+        </div>
+        <div th:if="${brandinputError}" style="margin-left: 30px">
+            <p style="color: red" th:text="${brandinputError}"></p>
+        </div>
+        <div th:if="${brandAddSuccess}" style="margin-left: 30px">
+            <p style="color: green" th:text="${brandAddSuccess}"></p>
+        </div>
+        <div th:if="${delmessagebrand}" style="margin-left: 30px">
+            <p style="color: red" th:text="${delmessagebrand}"></p>
+        </div>
+
+        <h5 style="margin-left: 50px;font-family: sans-serif">Brand List</h5>
+
+
+        <table class="table table-bordered" style="width: 500px;margin-left: 50px;">
+            <thead>
+            <tr>
+
+                <th scope="col">Brand Name</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody th:each="brand:${brands}">
+            <tr>
+                <td th:text="${brand.brandName}">
+
+                </td>
+                <td>
+                    <form class="d-inline" method="post" th:action="@{'/admin/category/deletebrand/' + ${brand.brandId}}">
+                        <span class=""><button class="delete btn" data-target="#deleteModal" data-toggle="modal" id="categoryDelete" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                  </button></span>
+                    </form>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+
+        <!-- modal add catogery-->
+        <button style="margin-left: 30px" type="button" class="btn btn-primary" data-toggle="modal" data-target="#brandModal">
+            Add Brand
+        </button>
+
+        <div class="modal fade" id="brandModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabe">Add Brand</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form inside the modal -->
+                        <form th:action="@{/admin/category/addbrand}" method="post">
+                            <div class="form-group">
+                                <label for="brandName">Brand Name:</label>
+                                <input type="text" class="form-control" id="brandName" name="brandName" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Brand</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--end brand-->
+
+
+
+
+
+
+
+
+
+
+        <!---footer---->
+
+
+    </div>
+
+
+</div>
+
+
+<script th:src="@{/admin/js/jquery-3.3.1.slim.min.js}"></script>
+<script th:src="@{/admin/js/popper.min.js}"></script>
+<script th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>
+
+<!-- Include jQuery only once -->
+<!--<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>-->
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $(".xp-menubar").on('click',function(){
+            $('#sidebar').toggleClass('active');
+            $('#content').toggleClass('active');
+        });
+
+        $(".xp-menubar,.body-overlay").on('click',function(){
+            $('#sidebar,.body-overlay').toggleClass('show-nav');
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+li{
+    list-style: none;
+    margin-left: 20px;
+}
+.logo{
+
+    font-family: "Your Desired Font", sans-serif; /* Change "Your Desired Font" to your preferred font */
+    font-size: 24px; /* Adjust the font size as needed */
+    font-weight: bold; /* Adjust the font weight as needed */
+    color: #007bff; /* Set the desired text color */
+    /* Add any other styles you want for your logo text */
+
+}

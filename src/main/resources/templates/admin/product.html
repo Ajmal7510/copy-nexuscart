@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  >
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <title>admin panel</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" th:href="@{/admin/css/bootstrap.min.css}">
+  <!----css3---->
+  <link rel="stylesheet" th:href="@{/admin/css/custom.css}">
+  <!--font awsom-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+  <!--google fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+  <!--google material icon-->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+</head>
+<body>
+
+
+<div class="wrapper">
+
+
+  <div class="body-overlay"></div>
+
+  <!-------------------------sidebar------------>
+  <!-- Sidebar  -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h3><img src="img/logo.png" class="img-fluid"/><span>Nexus Cart</span></h3>
+    </div>
+    <ul class="list-unstyled components">
+
+      <li  class="">
+        <a href="/admin/dashboard" class="dashboard"><i class="material-icons">dashboard</i>
+          <span>Dashboard</span></a>
+      </li>
+
+      <li  class="">
+
+        <a th:href="@{/admin/userlist}" class="dashboard" >
+          <i class="fa-solid fa-user"></i>
+          <span>User List</span></a>
+      </li>
+
+
+      <li class="active">
+        <a th:href="@{/admin/product}"><i class="fa-brands fa-product-hunt"></i>Product </a>
+      </li>
+
+      <li  class="">
+        <a th:href="@{/admin/category}"><i class="fa-solid fa-list" style="color: #18263f;"></i>Category
+        </a>
+      </li>
+
+
+    </ul>
+
+
+  </nav>
+
+
+
+
+  <!--------page-content---------------->
+
+  <div id="content">
+
+    <!--top--navbar----design--------->
+
+    <div class="top-navbar">
+      <div class="xp-topbar">
+
+        <!-- Start XP Row -->
+        <div class="row">
+          <!-- Start XP Col -->
+          <div class="col-2 col-md-1 col-lg-1 order-2 order-md-1 align-self-center">
+            <div class="xp-menubar">
+                               <span class="material-icons text-white">signal_cellular_alt
+							   </span>
+            </div>
+          </div>
+          <!-- End XP Col -->
+
+          <!-- Start XP Col -->
+          <div class="col-md-5 col-lg-3 order-3 order-md-2">
+            <div class="xp-searchbar">
+              <form>
+                <div class="input-group">
+                  <input type="search" class="form-control"
+                         placeholder="Search">
+                  <div class="input-group-append">
+                    <button class="btn" type="submit"
+                            id="button-addon2">GO</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!-- End XP Col -->
+
+          <!-- Start XP Col -->
+          <div class="col-10 col-md-6 col-lg-8 order-1 order-md-3">
+            <div class="xp-profilebar text-right">
+              <nav class="navbar p-0">
+                <ul class="nav navbar-nav flex-row ml-auto">
+
+                  <li class="nav-item">
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" data-toggle="dropdown">
+                      <img src="img/user.jpg" style="width:40px; border-radius:50%;"/>
+                      <span class="xp-user-live"></span>
+                    </a>
+                    <ul class="dropdown-menu small-menu">
+                      <li>
+                        <a href="#">
+                          <span class="material-icons">person_outline</span>Profile
+
+                        </a>
+                      </li>
+                      <li>
+
+                      </li>
+                      <li>
+                        <form th:action="@{/logout}" method="post">
+                          <a href="#"><span class="material-icons">
+logout</span> <button style="width: 0;height: 0" type="submit">Logout</button> </a>
+                        </form>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+
+
+              </nav>
+
+            </div>
+          </div>
+          <!-- End XP Col -->
+
+        </div>
+        <!-- End XP Row -->
+
+      </div>
+      <div class="xp-breadcrumbbar text-center">
+        <h4 class="page-title"></h4>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">product</a></li>
+          <li class="breadcrumb-item active" aria-current="page">addproduct</li>
+        </ol>
+      </div>
+
+    </div>
+
+
+
+    <!--------main-content------------->
+
+
+
+
+    <div class="main-content">
+      <div th:if="${deleted}"  >
+        <p style="color: red" th:text="${deleted}"></p>
+      </div>
+      <div th:if="${update}"  >
+        <p style="color: green" th:text="${update}"></p>
+      </div>
+      <a class="btn btn-primary" th:href="@{/admin/product/addproduct}" role="button">Add Product</a>
+
+      <div style="margin-top: 50px" class="row">
+        <table class="table table-responsive mt-5 table-hover table-bordered">
+          <thead class="table-dark">
+          <tr>
+            <th>Name</th>
+            <th>Photo</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Action</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr th:each="product :${products}">
+
+            <td class="text-center" th:text="${product.productName}"></td>
+            <td class="text-center"><img width="50px" height="50px" th:src="@{'/uploads/'+${product.imagesPath[0]}}" alt="ddd" > </img></td>
+            <td class="text-center" th:text="${product.getBrand().getBrandName()}"></td>
+            <td class="text-center" th:text="${product.getCategory().getCategoryName()}"></td>
+            <td class="text-center" th:text="${product.price}"></td>
+            <td class="text-center" th:text="${product.stock}"></td>
+            <td><span style="color: green" th:if="${product.isActive == true}">Available</span>
+              <span style="color: red" th:if="${product.isActive != true}">Unavailable</span>
+            </td>
+            <td>
+              <form th:action="@{/admin/product/block}" method="post">
+                <input type="hidden" th:name="productId" th:value="${product.productID}" />
+                <input type="hidden" th:name="isActive" th:value="${product.isActive}" />
+                <button style="width: 89px" type="submit" th:class="${product.isActive} ? 'btn btn-danger' : 'btn btn-success'">
+                  <span th:text="${product.isActive} ? 'Block' : 'Unblock'"></span>
+                </button>
+              </form>
+            </td>
+
+            <td> <a th:href="@{'/admin/product/editproduct/'+${product
+            .productID}}" ><i class="fa-regular fa-pen-to-square" style="color: #29477a;"></i></a></td>
+
+
+            <td>  <form class="d-inline" method="post" th:action="@{'/admin/product/deleteProduct/' + ${product.productID}}">
+                <span class=""><button class="delete btn" onclick="archiveFunction()" id="delete" type="submit">
+                   <i class="fa-solid fa-trash" style="color: #ff0000;"></i>
+                  </button></span>
+            </form></td>
+
+
+          </tr>
+
+          </tbody>
+        </table>
+
+
+
+          </div>
+
+
+      <!-- offers-->
+      <div style="margin-top: 50px" class="row">
+        <h5>OFFERS LIST</h5>
+        <table class="table table-responsive mt-5 table-hover table-bordered">
+          <thead class="table-dark">
+          <tr>
+            <th>brandName</th>
+            <th>Offer percentage</th>
+            <th>edit</th>
+            <th>delete</th>
+
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr th:each="offer :${offers}">
+
+            <td class="text-center" th:text="${offer.getBrand.getBrandName()}"></td>
+            <td class="text-center"><img width="50px" height="50px" th:src="@{'/uploads/'+${product.imagesPath[0]}}" alt="ddd" > </img></td>
+            <td class="text-center" th:text="${product.getBrand().getBrandName()}"></td>
+
+            <td><span style="color: green" th:if="${product.isActive == true}">Available</span>
+              <span style="color: red" th:if="${product.isActive != true}">Unavailable</span>
+            </td>
+            <td>
+              <form th:action="@{/admin/product/block}" method="post">
+                <input type="hidden" th:name="productId" th:value="${product.productID}" />
+                <input type="hidden" th:name="isActive" th:value="${product.isActive}" />
+                <button style="width: 89px" type="submit" th:class="${product.isActive} ? 'btn btn-danger' : 'btn btn-success'">
+                  <span th:text="${product.isActive} ? 'Block' : 'Unblock'"></span>
+                </button>
+              </form>
+            </td>
+
+            <td> <a th:href="@{'/admin/product/editproduct/'+${product
+            .productID}}" ><i class="fa-regular fa-pen-to-square" style="color: #29477a;"></i></a></td>
+
+
+            <td>  <form class="d-inline" method="post" th:action="@{'/admin/product/deleteProduct/' + ${product.productID}}">
+                <span class=""><button class="delete btn" onclick="archiveFunction()" id="delete" type="submit">
+                   <i class="fa-solid fa-trash" style="color: #ff0000;"></i>
+                  </button></span>
+            </form></td>
+
+
+          </tr>
+
+          </tbody>
+        </table>
+
+
+
+      </div>
+      <!---end offers-->
+        </div>
+
+        <!-- Edit Modal HTML -->
+
+
+
+
+
+        <!---footer---->
+
+
+      </div>
+
+
+    </div>
+
+
+<script th:src="@{/admin/js/jquery-3.3.1.slim.min.js}"></script>
+<script th:src="@{/admin/js/popper.min.js}"></script>
+<script th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>
+
+<!-- Include jQuery only once -->
+<!--<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>-->
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    $(".xp-menubar").on('click',function(){
+      $('#sidebar').toggleClass('active');
+      $('#content').toggleClass('active');
+    });
+
+    $(".xp-menubar,.body-overlay").on('click',function(){
+      $('#sidebar,.body-overlay').toggleClass('show-nav');
+    });
+
+  });
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  archiveFunction() {
+    swal({
+              title: "Are you sure?",
+              text: "But you will still be able to retrieve this file.",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "Yes, archive it!",
+              cancelButtonText: "No, cancel please!",
+              closeOnConfirm: false,
+              closeOnCancel: false
+            },
+            function(isConfirm){
+              if (isConfirm) {
+                swal("Deleted!", "Your imaginary file has been archived.", "success");
+              } else {
+                swal("Cancelled", "Your imaginary file is safe :)", "error");
+              }
+            });
+  }
+</script>
+
+</body>
+
+</html>
