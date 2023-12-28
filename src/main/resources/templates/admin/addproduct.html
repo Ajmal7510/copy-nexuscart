@@ -8,6 +8,11 @@
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
+    <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
+
+
+
     <style>
         .box {
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -103,7 +108,8 @@
                         </svg>
                     </label>
                     <input accept="image/*" class="form-control image d-none" id="imageFile1" name="productImages"
-                           onchange="previewImage('imageFile1','img1','image-section-1','delete-button-1')" required type="file"/>
+                           onchange="initCropper(this, 'img1', 'image-section-1', 'delete-button-1')" required type="file"/>
+
                     <div class="d-flex flex-column">
                         <div>
                             <img id="img1" src="">
@@ -142,6 +148,7 @@
                     </label>
                     <input accept="image/*" class="form-control image d-none" id="imageFile3" name="productImages"
                            onchange="previewImage('imageFile3','img3','image-section-3','delete-button-3')" required type="file"/>
+
                     <div class="d-flex flex-column">
                         <div>
                             <img id="img3" src="">
@@ -206,6 +213,7 @@
         </form>
     </div>
 </main>
+<script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
 <script>
     function previewImage(inputId,imgId,labelId,deleteButtonId){
         const file = document.getElementById(inputId);
@@ -242,7 +250,29 @@
         dltButton.style.display = "none";
         label.style.display = "inline-block";
     }
+
 </script>
+
+<script>
+    // ... your existing previewImage and deleteImage functions ...
+
+    function initCropper(inputElement, imageId, labelId, deleteButtonId) {
+        const image = document.getElementById(imageId);
+        const cropper = new Cropper(image, {
+            // Adjust cropping options as needed
+            aspectRatio: 16 / 9,
+            viewMode: 1,
+        });
+
+        // Reset cropper when a new image is selected
+        inputElement.addEventListener('change', () => {
+            cropper.destroy();
+            previewImage(inputElement.id, imageId, labelId, deleteButtonId);
+            initCropper(inputElement, imageId, labelId, deleteButtonId);
+        });
+    }
+</script>
+
 </body>
 
 </html>

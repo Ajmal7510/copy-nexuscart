@@ -83,7 +83,7 @@
               </svg>
             </label>
             <input accept="image/*" class="form-control image d-none" id="imageFile1" name="productImages"
-                   onchange="previewImage('imageFile1','img1','image-section-1','delete-button-1')" type="file"/>
+                   onchange="previewImage('imageFile1','img1','image-section-1','delete-button-1')" required type="file"/>
             <div class="d-flex flex-column">
               <div>
                 <img class="product-image" id="img1" th:src="@{'/uploads/' + ${product.imagesPath[0]}}" >

@@ -25,4 +25,7 @@ public class Product_DTO {
     private Long brandId;
 
     private MultipartFile[] productImages;
+
+    private String ram;
+    private String storage;
 }

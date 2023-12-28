@@ -23,5 +23,6 @@ public interface ProductService {
     String update(Long id, Product_DTO productDto) throws IOException;
 
     void save(Products products);
+     void reduceStock(Long productId,int quantity);
 
 }

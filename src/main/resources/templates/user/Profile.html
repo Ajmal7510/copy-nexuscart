@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
+    <meta name="_csrf" th:content="${_csrf.token}" />
   <!-- css -->
   <link rel="stylesheet" th:href="@{/user/home/assets/style.css}" type="text/css">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
   <!-- Asom font -->
@@ -40,7 +44,6 @@
 
 <header th:replace="fragments/navbar :: header-nav"></header>
 
-
 <div class="container ">
   <div class="main-body ">
 
@@ -50,15 +53,17 @@
         <div class="card">
           <div class="card-body">
             <div class="d-flex flex-column align-items-center text-center">
-              <img th:src="@{'/uploads/'+${userData.profilePhoto}}" alt="Profile Pic"
+              <img th:src="@{'/profile/'+${userData.profilePhoto}}" alt="Profile Pic"
                    class="rounded-circle" style="width: 200px;height: 200px; object-fit: cover;">
-              <div class="d-flex justify-content-center mt-3">
-                <label for="imageInput" class="btn btn-primary btn-rounded">
-                  choose File
-                  <input type="file" id="imageInput" name="profileimage" accept="image/*" style="display: none;" onchange="uploadprofiepic(event)">
-                </label>
-              </div>
-              <div class="mt-3">
+                <p th:text="${userData.profilePhoto}"></p>
+                <div class="d-flex justify-content-center mt-3">
+                    <label for="imageInput" class="btn btn-primary btn-rounded">
+                        Choose File
+                        <input type="file" id="imageInput" name="profileimage" accept="image/*" style="display: none;" onchange="uploadprofiepic(event)">
+                    </label>
+                </div>
+
+                <div class="mt-3">
                 <h4 th:text="${userData.name}" ></h4>
               </div>
             </div>
@@ -92,11 +97,11 @@
                         <h5 class="modal-title " id="staticBackdropLabel">Edit Profile</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <form id="nameForm" method="post" action="">
+                      <form id="nameForm" method="post" th:action="@{/user/profile/updateName}">
                         <div class="modal-body">
                           <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" name="name" value=""
+                            <input type="text" class="form-control" name="name" th:value="${userData.name}"
                                    placeholder="Enter your name">
                           </div>
                         </div>
@@ -167,25 +172,27 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <form id="password-form">
+                    <form id="password-form" >
                       <div class="mb-3">
                         <label for="old-password" class="col-form-label">Old Password:</label>
-                        <input type="password" class="form-control" id="oldPassword">
+                        <input type="password" name="oldPassword" class="form-control" id="oldPassword">
                       </div>
                       <div class="mb-3">
                         <label for="new-password" class="col-form-label">New Password:</label>
-                        <input type="password" class="form-control" id="newPassword">
+                        <input type="password" name="password" class="form-control" id="newPassword">
                       </div>
                       <div class="mb-3">
                         <label for="confirm-password" class="col-form-label">Confirm Password:</label>
-                        <input type="password" class="form-control" id="confirmPassword">
+                        <input  type="password" class="form-control" id="confirmPassword">
                       </div>
                       <div id="passwordWarning" style="color: red;"></div>
+
                     </form>
-                  </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                  </div>
+
                   </div>
                 </div>
               </div>
@@ -199,7 +206,7 @@
 
 
       .list-group-item {
-        cursor: pointer;
+        cursor: pointer ;
         transition: background-color 0.3s, color 0.3s;
       }
 
@@ -212,7 +219,7 @@
       <div class="card-body p-0">
         <ul class="list-group list-group-flush rounded-3">
           <li class="list-group-item d-flex justify-content-between align-items-center p-3"
-              onclick="window.location.href='/user-orderlist'">
+              onclick="window.location.href='/user/orders'">
             <h6 class="mb-0">My Orders</h6>
             <i class="fa-solid fa-box-open text-primary"></i>
           </li>
@@ -227,12 +234,12 @@
             <i class="fa-solid fa-heart text-danger"></i>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center p-3"
-              onclick="window.location.href='/user-manageAddress'">
+              onclick="window.location.href='/user/profile/manage-address'">
             <h6 class="mb-0">Manage Address</h6>
             <i class="fa-solid fa-address-book"></i>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center p-3"
-              onclick="window.location.href='/user/logout'">
+              onclick="window.location.href='z/logout'">
             <h6 class="mb-0">Logout</h6>
             <i class="fa-solid fa-arrow-right-from-bracket text-danger "></i>
           </li>
@@ -247,92 +254,111 @@
 
 <script>
 
-  function uploadprofiepic(event) {
-    const fileInput = event.target;
-    if (fileInput.files && fileInput.files[0]) {
+    function uploadprofiepic(event) {
 
-      const formData = new FormData();
-      formData.append('profileimage', fileInput.files[0]);
-      fetch('/user-profileImage', {
-        method: 'POST',
-        body: formData,
-      })
-              .then(res => {
-                if (res.ok) {
-                  console.log("File uploaded successfully");
-                  window.location.reload();
+        const fileInput = event.target;
+        if (fileInput!=null)
+        if (fileInput.files && fileInput.files[0]) {
+
+            const formData = new FormData();
+            formData.append('profileimage', fileInput.files[0]);
+            fetch('/user/profile/profileImage', {
+                method: 'put',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': getCsrfToken(),
+                },
+            })
+                .then(res => {
+                    if (res.ok) {
+                        console.log("File uploaded successfully");
+                        window.location.reload();
+                    } else {
+                        console.error("Upload failed");
+                    }
+                })
+                .catch(err => console.error('Error uploading files', err));
+        }
+    }
+
+    function changePassword() {
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const passwordWarning = document.getElementById('passwordWarning');
+
+        // Clear previous warning messages
+        passwordWarning.textContent = "";
+
+        // Validate form inputs
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            passwordWarning.textContent = "All password fields are required.";
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            passwordWarning.textContent = "Passwords do not match.";
+            return;
+        }
+
+        // Additional password complexity checks can be added here if needed
+
+        const Data = new FormData();
+        Data.append('oldPassword', oldPassword);
+        Data.append('newPassword', newPassword);
+
+        fetch('/user/profile/changePassword', {
+            method: 'PUT',
+            body: Data,
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken(),
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Password change response:", data);
+                if (data.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Password changed successfully",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(() => {
+                        // Optionally, you can redirect or reload the page after a successful password change
+                        // window.location.reload();
+                    });
+                    $('#exampleModal').modal('hide');
                 } else {
-                  console.error("Upload failed");
+                    // Handle unsuccessful password change (e.g., display an error message)
+                    passwordWarning.textContent = data.message || "Password change failed.";
                 }
-              })
-              .catch(err => console.error('Error uploading files', err));
+            })
+            .catch(error => {
+                console.error("Error during password change:", error);
+                // Handle other errors (e.g., network issues)
+                passwordWarning.textContent = "An error occurred during password change.";
+            });
     }
+
+  function sample(){
+        fetch('/user/sample',
+            {
+                method:'put',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCsrfToken()
+                }
+            }).then(respons=>respons.json())
+            .then(data=>
+            console.log(data)
+            )
   }
 
-  function changePassword() {
-    const oldPassword = document.getElementById('oldPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const passwordWarning = document.getElementById('passwordWarning');
-
-    if (!oldPassword) {
-      passwordWarning.textContent = "old password is required";
-    } else if (!newPassword) {
-      passwordWarning.textContent = "new password is required";
-    } else if (!confirmPassword) {
-      passwordWarning.textContent = "Confirm password is required";
-    } else if (newPassword !== confirmPassword) {
-      passwordWarning.textContent = "Passwords do not match";
-    } else if (
-            newPassword.length < 8 ||
-            !/[0-9]/.test(newPassword) ||
-            !/[A-Z]/.test(newPassword) ||
-            !/[a-z]/.test(newPassword) ||
-            !/[$&+,:;=?@#|'<>.^*()%!-]/.test(newPassword)
-    ) {
-      passwordWarning.textContent =
-              "Password should contain at least one uppercase letter, one lowercase letter, a special character (@#$%^&+=!), and a number. Password length should be between 8 and 20 characters.";
-    } else {
-      const data = {
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-      };
-
-      fetch('/user-changePassword', {
-        method: "post",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-              .then(response => response.json())
-              .then(response => {
-                console.log("responmsee",response);
-                if (response.success) {
-                  Swal.fire({
-                    icon: "success",
-                    title: "Password changed Successfully",
-                    showConfirmButton: false,
-                    timer: 2000,
-                  }).then(()=>{
-                    window.location.reload()
-                  })
-                  $('#exampleModal').modal('hide')
-
-                } else{
-                  Swal.fire({
-                    icon: 'error',
-                    title: response.error,
-                    showConfirmButton: false,
-                    timer: 2500,
-                  });
-                }
-              })
-              .catch(error => {
-                console.error(error);
-              });
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').content;
     }
-  }
+
+
 
 
 </script>

@@ -14,25 +14,18 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fullName")
+
     private String name;
-
-    @Column(name = "mobile")
     private String mobile;
-
-    @Column(name = "House_No.")
     private String address;
-
-    @Column(name = "locality")
-    private String locality;
-
-    @Column(name = "city")
     private String city;
 
-    @Column(name = "pin")
     private String pin;
 
+    private String state;
+
+    @Transient
     public String getFullAddress() {
-        return address + ", " + locality + ", " + city + " - " + pin;
+        return address + ", " + state+ ", " + city + " - " + pin;
     }
 }

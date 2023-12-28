@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -22,8 +23,19 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "cart_user_id" )
     private UserInfo user;
-
-    @Column(name = "totalCartAmount")
     private double totalCartAmount = 0.0;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cart cart = (Cart) o;
+        return Objects.equals(CartId, cart.CartId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CartId);
+    }
 }

@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 
@@ -36,7 +37,7 @@ public class ProductController {
 
     @GetMapping("")
     public String prodect(Model model){
-        model.addAttribute("products",productService.findallProduct());
+        model.addAttribute("products",productService.);
         return "admin/product";
     }
     @GetMapping("/addproduct")
@@ -63,11 +64,6 @@ public class ProductController {
         String UPLOAD_DIR="C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\uploads\\";
         MultipartFile[] files = productDTO.getProductImages();
 //        String[] images = productDTO.getImages_path();
-
-        for (MultipartFile file : files) {
-            file.transferTo(new File(UPLOAD_DIR + file.getOriginalFilename()));
-        }
-
         // Create a Products entity from the DTO
         Products product = new Products();
         product.setProductName(productDTO.getProductName());
@@ -76,11 +72,22 @@ public class ProductController {
         product.setPrice(productDTO.getPrice());
         product.setCategory(categoryService.getCategoryById(productDTO.getCategoryId()));
         product.setBrand(categoryService.getBrandById(productDTO.getBrandId()));
+        product.setRam(productDTO.getRam()+"GB");
+        product.setStorage(productDTO.getStorage()+"GB");
+        int i=0;
+
+
+        for (MultipartFile file : files) {
+            String UUI = UUID.randomUUID().toString();
+            product.getImagesPath()[i] = UUI+productDTO.getProductImages()[i].getOriginalFilename();
+            file.transferTo(new File(UPLOAD_DIR +UUI+ file.getOriginalFilename()));
+            i++;
+        }
+
+
 
         // Set images path (you might want to modify this based on your actual logic)
-        for (int i = 0; i < productDTO.getProductImages().length; i++) {
-            product.getImagesPath()[i] = productDTO.getProductImages()[i].getOriginalFilename();
-        }
+
         System.out.println(productDTO.getProductImages()[0].getOriginalFilename());
 
 
@@ -124,8 +131,8 @@ public class ProductController {
                              @RequestParam(name="productName",required = false) String productName,
                              @RequestParam(name="description",required = false) String description,
                              @RequestParam(name="productImages",required = false) MultipartFile[] imageFiles,
-                             @RequestParam(name="productPrice",required = false) Float price,
-                             @RequestParam(name="productStock",required = false) Integer stock
+                             @RequestParam(name="price",required = false) Float price,
+                             @RequestParam(name="stock",required = false) Integer stock
 
     ) throws IOException {
         Products products=productService.findProductById(productId);
@@ -135,7 +142,7 @@ public class ProductController {
         if(!productName.isBlank()){
             products.setProductName(productName);
         }
-        if(description.isBlank()){
+        if(!description.isBlank()){
             products.setDescription(description);
         }
         if(stock!=null){
@@ -150,15 +157,18 @@ public class ProductController {
             String imagepath = imageFiles[0].getOriginalFilename();
             System.out.println("hi" + imagepath);
         }
-        String UPLOAD_DIR="C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\uploads\\";
+        String UPLOAD_DIR = "C:" + File.separator + "Project 1" + File.separator + "ecommerce" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
 
 
-        if(imageFiles[0].getOriginalFilename().isBlank()){
+
+        if(imageFiles != null && !imageFiles[0].getOriginalFilename().isBlank()){
             System.out.println("this is blank");
         }
         for(int i=0;i<imageFiles.length;i++){
+            String UUI = UUID.randomUUID().toString();
+
             if(!imageFiles[i].getOriginalFilename().isBlank()){
-                imageFiles[i].transferTo(new File(UPLOAD_DIR + imageFiles[i].getOriginalFilename()));
+                imageFiles[i].transferTo(new File(UPLOAD_DIR + UUI + imageFiles[i].getOriginalFilename()));
                 Path filePath = Paths.get(UPLOAD_DIR+products.getImagesPath()[i]);
 
                 try {
@@ -166,18 +176,16 @@ public class ProductController {
                 }catch (IOException e){
                     throw new IOException(e.getMessage());
                 }
-                products.getImagesPath()[i]=imageFiles[i].getOriginalFilename();
+                products.getImagesPath()[i]=UUI+imageFiles[i].getOriginalFilename();
             }
         }
-
-
-
-
-
+        products.setPrice(price);
+        products.setStock(stock);
 
         products.setCategory(categoryService.findById(categoryId));
         products.setBrand(categoryService.findByBrandId(brandId));
         productService.save(products);
+
         return "redirect:/admin/product";
     }
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -29,4 +30,26 @@ public class UserInfo {
     @JoinColumn(name = "user_id")
     private List<Address> userAddresses = new LinkedList<>();
     private String profilePhoto="img.png";
+    @OneToOne
+    @JoinColumn(name = "user_wishlist")
+    private  Wishlist wishlist;
+
+    @OneToMany(mappedBy = "user")
+    private List<Orders> orders;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserInfo userInfo = (UserInfo) o;
+        return Objects.equals(userId, userInfo.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId);
+    }
+
 }

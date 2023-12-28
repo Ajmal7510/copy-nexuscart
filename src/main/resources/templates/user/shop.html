@@ -6,6 +6,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="_csrf" th:content="${_csrf.token}" />
 
     <!-- Bootstrap CSS v5.2.1 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -65,7 +66,7 @@
 
         <div  class="container-fluid bg-trasparent my-4 p-3" style="position: relative">
             <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
-                <div th:each="product :${product}" class="col hp">
+                <div th:each="product, iterStat : ${product}" class="col hp">
                     <div  class="card h-100 shadow-sm">
                         <a href="#">
                             <img style="object-fit: cover" width="100%" height="300px"  th:src="@{'/uploads/'+${product.imagesPath[0]}}" class="card-img-top " alt="product.title" />
@@ -86,15 +87,20 @@
 
                             <div class="d-grid gap-2 my-4">
 
-                                <a href="#" class="btn btn-warning bold-btn"  >add to cart</a>
+                                <input type="hidden" th:id="'productId_' + ${iterStat.index}" th:value="${product.productID}" />
+
+
+                                <button th:onclick="'addcart(' + ${iterStat.index} + ')'" class="btn btn-warning bold-btn">add to cart</button>
+
 
                             </div>
                             <div class="clearfix mb-1">
 
+
                                 <span class="float-start"><a href="#"><i class="fas fa-question-circle"></i></a></span>
 
                                 <span class="float-end">
-                        <i class="far fa-heart" style="cursor: pointer"></i>
+                       <button > <i class="far fa-heart" style="cursor: pointer"></i></button>
 
                       </span>
 
@@ -106,7 +112,10 @@
         </div>
     </section>
 
+
 </main>
+
+
 
 
 <!-- Bootstrap JavaScript Libraries -->
@@ -117,7 +126,72 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous">
+
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+<script>
+    function addcart(index) {
+        console.log("fuction worked ")
+        // Fetch URL for your server endpoint to handle the cart addition
+        const addToCartURL = '/user/cart/add-to-cart';
+        const productId = document.getElementById('productId_' + index).value;
+        console.log("productid geted")
+
+        // Create FormData and append the product ID
+        const formData = new FormData();
+        formData.append("productId", productId);
+
+        // Example: Sending a POST request with FormData
+        fetch(addToCartURL, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken(),
+            },
+            body: formData
+        })
+            .then(res => {
+                if (res.ok) {
+                    console.log("Added to cart successfully");
+                    // Show a success message using Swal
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Product added to cart successfully',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    window.location.reload();
+                } else {
+                    console.error("Failed to add to cart");
+                    // Show an error message using Swal
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error adding product to cart',
+                        text: 'Please try again later.'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Error adding to cart:', err);
+                // Show a generic error message using Swal
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: 'Please try again later.'
+                });
+            });
+    }
+
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').content;
+    }
+</script>
+
+
 
 </body>
 

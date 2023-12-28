@@ -42,9 +42,9 @@
         </form>
         <li >
           <div class="d-flex">
-            <a  href="#Cart">
+            <a  th:href="@{/user/cart}">
                     <span style="font-size: 35px; color: black; margin-right: 20px;" class="material-symbols-outlined">
-                    shopping_cart<span style="font-size: 10px;margin-bottom: 1px;" class="badge rounded-pill bg-info">2</span>
+                    shopping_cart<span style="font-size: 10px;margin-bottom: 1px;" class="badge rounded-pill bg-info"><span th:text="${cartItemsCount}"></span></span>
                     </span>
 
             </a>

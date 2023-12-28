@@ -1,9 +1,13 @@
 package com.ecommerceproject1.ecommerce.Service.User.imp;
 
+import com.ecommerceproject1.ecommerce.Entity.user.Cart;
 import com.ecommerceproject1.ecommerce.Entity.user.UserInfo;
+import com.ecommerceproject1.ecommerce.Entity.user.Wishlist;
 import com.ecommerceproject1.ecommerce.Exeption.UserAlredyExistException;
 import com.ecommerceproject1.ecommerce.Repository.UserInfoRepository;
+import com.ecommerceproject1.ecommerce.Service.User.CartService;
 import com.ecommerceproject1.ecommerce.Service.User.UserInfoService;
+import com.ecommerceproject1.ecommerce.Service.User.WishlistService;
 import com.ecommerceproject1.ecommerce.Service.Verification.EmailService;
 import com.ecommerceproject1.ecommerce.Service.Verification.RedisService;
 import com.ecommerceproject1.ecommerce.model.user.UserDto;
@@ -38,6 +42,11 @@ UserInfoServiceimp implements UserInfoService {
     private RedisService redisService;
     @Autowired
     private  HttpSession session;
+
+    @Autowired
+    private CartService cartService;
+    @Autowired
+    private WishlistService wishlistService;
 
 
 
@@ -75,18 +84,23 @@ UserInfoServiceimp implements UserInfoService {
     @Override
     public void saveuser(UserDto userDto) {
         UserInfo user=new UserInfo();
+        Cart cart=cartService.getcart();
+        Wishlist wishlist=wishlistService.getWishlist();
+        user.setWishlist(wishlist);
+        user.setCart(cart);
         user.setName(userDto.getName());
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setRole("USER");
+        cart.setUser(user);
+        wishlist.setUser(user);
         userInfoRepository.save(user);
     }
 
     public void resentOtp(String email){
         redisService.deleteOtp(email);
         String otp = generateOtp();
-
 //         Save OTP to Redis
         redisService.saveOtp(email, otp);
         // Send verification email
@@ -106,4 +120,6 @@ UserInfoServiceimp implements UserInfoService {
             userInfoRepository.save(user);
         }
     }
+
+
 }

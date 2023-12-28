@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
@@ -53,15 +55,24 @@ public class SecurityConfigeration {
                                 .logoutSuccessUrl("/login?logout")
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
-                );
+                ).csrf(cscf->cscf
+                        .csrfTokenRepository(csrfTokenRepository()));
 
                 return http.build();
     }
     @Bean
     BCryptPasswordEncoder bCryptPasswordEncoder() {
         return  new BCryptPasswordEncoder();
-
     }
+
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-CSRF-TOKEN");
+        return repository;
+    }
+
 
 
 }

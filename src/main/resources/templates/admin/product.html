@@ -24,6 +24,11 @@
   <!--google material icon-->
   <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.6.0/css/searchBuilder.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
+
 </head>
 <body>
 
@@ -180,7 +185,7 @@ logout</span> <button style="width: 0;height: 0" type="submit">Logout</button> <
       <a class="btn btn-primary" th:href="@{/admin/product/addproduct}" role="button">Add Product</a>
 
       <div style="margin-top: 50px" class="row">
-        <table class="table table-responsive mt-5 table-hover table-bordered">
+        <table id="myTable" class="table table-responsive mt-5 table-hover table-bordered">
           <thead class="table-dark">
           <tr>
             <th>Name</th>
@@ -315,8 +320,20 @@ logout</span> <button style="width: 0;height: 0" type="submit">Logout</button> <
 <script th:src="@{/admin/js/bootstrap.min.js}"></script>
 <script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>
 
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/searchbuilder/1.6.0/js/dataTables.searchBuilder.min.js"></script>
+<script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+
 <!-- Include jQuery only once -->
 <!--<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>-->
+<script>
+  $(document).ready(function () {
+    $('#myTable').DataTable();
+  });
+</script>
 
 <script type="text/javascript">
 

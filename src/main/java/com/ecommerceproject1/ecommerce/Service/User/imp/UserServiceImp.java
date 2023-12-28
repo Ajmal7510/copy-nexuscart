@@ -3,14 +3,14 @@ package com.ecommerceproject1.ecommerce.Service.User.imp;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Brands;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Categories;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Products;
+import com.ecommerceproject1.ecommerce.Entity.user.Cart;
 import com.ecommerceproject1.ecommerce.Entity.user.UserInfo;
 import com.ecommerceproject1.ecommerce.Exeption.ResourceNotFound;
-import com.ecommerceproject1.ecommerce.Repository.BrandsRepository;
-import com.ecommerceproject1.ecommerce.Repository.CategoryRepository;
-import com.ecommerceproject1.ecommerce.Repository.ProductRepository;
-import com.ecommerceproject1.ecommerce.Repository.UserInfoRepository;
+import com.ecommerceproject1.ecommerce.Repository.*;
 import com.ecommerceproject1.ecommerce.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -27,6 +27,9 @@ public class UserServiceImp implements UserService {
 
   @Autowired
   private UserInfoRepository userInfoRepository;
+  @Autowired
+  private CartRepository cartRepository;
+
 
     @Override
     public String shopPage(Model model) {
@@ -36,6 +39,9 @@ public class UserServiceImp implements UserService {
         model.addAttribute("brands", brands);
         List<Products> products1 = productRepository.findTop8ByIsActiveTrue();
         model.addAttribute("product",products1);
+        UserInfo user=userInfoRepository.findByEmail(currentUserName());
+        Cart cart=cartRepository.findByUserUserId(user.getUserId());
+        model.addAttribute("cartItemsCount",cart.getCartProducts().size());
         return "user/shop";
     }
 
@@ -43,6 +49,9 @@ public class UserServiceImp implements UserService {
     public String allproduct(Model model) {
         List<Products>  products=productRepository.findByIsActiveTrue();
         model.addAttribute("product",products);
+        UserInfo user=userInfoRepository.findByEmail(currentUserName());
+        Cart cart=cartRepository.findByUserUserId(user.getUserId());
+        model.addAttribute("cartItemsCount",cart.getCartProducts().size());
         return "user/listallproduct";
     }
 
@@ -55,6 +64,9 @@ public class UserServiceImp implements UserService {
             throw new ResourceNotFound("Product not found");
         }
         model.addAttribute("product",products);
+        UserInfo user=userInfoRepository.findByEmail(currentUserName());
+        Cart cart=cartRepository.findByUserUserId(user.getUserId());
+        model.addAttribute("cartItemsCount",cart.getCartProducts().size());
         return "user/Productdetails";
     }
 
@@ -63,5 +75,10 @@ public class UserServiceImp implements UserService {
         return userInfoRepository.findByEmail(email);
     }
 
+    @Override
+    public String currentUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
 
 }

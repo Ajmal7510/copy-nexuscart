@@ -20,6 +20,9 @@ public class Products {
 
     private String productName;
 
+    private String ram;
+    private String storage;
+
     @Column(length = 512)
     private String description;
 

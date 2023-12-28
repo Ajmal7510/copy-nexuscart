@@ -8,19 +8,28 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CartProduct {
+@AllArgsConstructor
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne()
-    private Cart cart;
 
     @ManyToOne
     private Products product;
+    //    private double productPriceWhenOrdering;
+    private Integer quantity ;
 
-    private int quantity=1;
+    @ManyToOne()
+    private Orders orders;
+
+
+    public OrderItem(CartProduct cartItem) {
+        this.product = cartItem.getProduct();
+        this.quantity = cartItem.getQuantity();
+
+    }
+
 
 }

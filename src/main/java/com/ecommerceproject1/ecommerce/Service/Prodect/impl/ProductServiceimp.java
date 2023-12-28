@@ -131,4 +131,12 @@ public class ProductServiceimp implements ProductService {
     public void save(Products products) {
         productRepository.save(products);
     }
+
+    @Override
+    public void reduceStock(Long productId,int quantity) {
+        Products products = productRepository.findById(productId).orElse(null);
+
+        products.setStock(products.getStock()-quantity);
+        productRepository.save(products);
+    }
 }
