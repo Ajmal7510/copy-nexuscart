@@ -36,39 +36,9 @@
 
     <!-------------------------sidebar------------>
     <!-- Sidebar  -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3><img src="img/logo.png" class="img-fluid"/><span>Nexus Cart</span></h3>
-        </div>
-        <ul class="list-unstyled components">
+    <div th:replace="Fragments/sidebar :: sidebar">
 
-            <li  class="">
-                <a th:href="@{/admin/dashboard}" class="dashboard"><i class="material-icons">dashboard</i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <li  class="">
-
-                <a th:href="@{/admin/userlist}" class="dashboard" >
-                    <i class="fa-solid fa-user"></i>
-                    <span>User List</span></a>
-            </li>
-
-
-            <li class="">
-                <a th:href="@{/admin/product}"><i class="fa-brands fa-product-hunt"></i>Product </a>
-            </li>
-
-            <li  class="active">
-                <a th:href="@{/admin/category}"><i class="fa-solid fa-list" style="color: #18263f;"></i>Catorgery
-                </a>
-            </li>
-
-
-        </ul>
-
-
-    </nav>
+    </div>
 
 
 

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+  <title>Title</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  <!-- Bootstrap CSS v5.2.1 -->
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous"
+  />
+</head>
+
+<body>
+<header>
+  <!-- place navbar here -->
+</header>
+<main>
+  <%-include("../partials/adminPartials/sidebar")%>
+
+  <style>
+    .product-text-container {
+      border-radius: 12px;
+      width: 100%;
+      height: 56px;
+      margin-top: 73px;
+      box-shadow: 0px 0px 7px -3px;
+    }
+  </style>
+
+  <body>
+  <div class="product-text-container container" style="display: flex; justify-content: space-between;">
+    <h4 style=" margin-top: 11px;" id="ManageProduct-text">ORDER DETAILS</h4>
+  </div>
+  <section class="h-100 ">
+    <div class="container py-5 h-100  ">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-10 col-xl-8">
+          <div class="card shadow" style="border-radius: 10px;">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <!-- <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p> -->
+              </div>
+              <div class="card shadow-0 border mb-4">
+                <div class="card-body">
+                  <!-- <% if (orderData && orderData[0].items && Array.isArray(orderData[0].items)) { %>
+                      <% orderData[0].items.forEach((x) => { %> -->
+                  <div  th:each="product :${order.orderProducts}" class="row" style="font-family: 'Times New Roman', Times, serif;">
+                    <div class="col-md-2">
+                      <img  th:src="@{'/uploads/'+${product.product.imagesPath[0]}}"
+                           class="img-fluid" alt="Phone">
+                    </div>
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class=" mb-0" th:text="${product.product.productName}"> </p>
+                    </div>
+
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class=" mb-0 small">Qty : <span th:text="${product.quantity}"></span></p>
+                    </div>
+
+                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                      <p class=" mb-0 small">Price: <span th:text="${product.product.price}"></span></p>
+                    </div>
+
+                    <h5 th:if="${order.status=='return'}" style="color: brown;">Product Return</h5>
+
+<!--                    <% }else if(orderData[0].status=="Order Delivered" ){ %>-->
+<!--                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">-->
+<!--                      <button class="btn small btn-danger"  style="&#45;&#45;bs-btn-padding-y: .25rem; &#45;&#45;bs-btn-padding-x: .5rem; &#45;&#45;bs-btn-font-size: .75rem;"-->
+<!--                              id="returnOrderBtn" data-item-id="<%= x._id %> " data-order-id="<%=orderData[0]._id%>">Return</button>-->
+<!--                    </div>-->
+<!--                    <% }else{%>-->
+
+
+                  </div>
+
+                  <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                  <div class="row d-flex align-items-center">
+                  </div>
+
+                </div>
+              </div>
+
+
+
+              <div style="font-family: 'Times New Roman', Times, serif;">
+                <div class="d-flex justify-content-between" >
+                  <p class=" mb-0">Order ID : <span th:text="${order.orderId}"></span></p>
+                  <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p> -->
+                </div>
+
+                  <div class="d-flex justify-content-between mb-5">
+                      <p class="mb-0">
+                          <b>Order Status :
+
+
+                            <Span th:text="${order.status}"></Span>
+                          </b>
+                      </p>
+                      <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p> -->
+                  </div>
+
+                  <h5 style="text-decoration: underline;">Order Address</h5>
+                <div class="d-flex justify-content-between pt-2">
+                  <p class=" mb-0" th:text="${order.address.name}"></p>
+
+                </div>
+                <div class="d-flex justify-content-between pt-2">
+                  <p class=" mb-0" th:text="${order.address.address}"></p>
+
+                </div>
+                <div class="d-flex justify-content-between pt-2">
+                  <p class=" mb-0" th:text="${order.address.city}"></p>
+
+                </div>
+                <div class="d-flex justify-content-between pt-2">
+                  <p class="mb-0" th:text="${order.address.pin}"></p>
+
+                </div>
+                <div class="d-flex justify-content-between pt-2">
+                  <p class="mb-0" th:text="${order.address.state}"></p>
+
+                </div>
+                <div class="d-flex justify-content-between pt-2">
+                  <p class=" mb-0" th:text="${order.address.mobile}"></p>
+
+                </div>
+              </div>
+            </div>
+            <div class="card-footer border-0 px-4 py-5"
+                 style="background-color: #014122; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+              <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0" style="font-family: 'Times New Roman', Times, serif;">Total   Amount :
+                <span class=" h3 mb-0 ms-2">  ₹ <span th:text="${order.totalAmount}"></span> </span></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>
+  <!-- place footer here -->
+</footer>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>
+

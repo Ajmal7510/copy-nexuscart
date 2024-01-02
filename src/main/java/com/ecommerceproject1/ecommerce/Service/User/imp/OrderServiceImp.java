@@ -227,7 +227,34 @@ public class OrderServiceImp implements OrderService {
 
     }
 
+    @Override
+    public String orderDetails(Long productId, Model model) {
+        try {
+            Orders orders = orderRepository.findById(productId).orElse(null);
+            double orderStatusPercentage = 0.0;
 
+
+            if ("Ordered".equals(orders.getStatus())) {
+                orderStatusPercentage = 0.0;
+            }else if("Order Placed".equals(orders.getStatus())){
+                orderStatusPercentage=25.0;
+
+            }else if ("Shipped".equals(orders.getStatus())) {
+                orderStatusPercentage = 50.0;
+            } else if ("Delivered".equals(orders.getStatus())) {
+                orderStatusPercentage = 100.0;
+            }
+
+            model.addAttribute("orderStatusPercentage", orderStatusPercentage);
+
+            model.addAttribute("orders", orders);
+
+            return "user/orderDetails";
+        } catch (Exception e) {
+
+            return "Exception/404";
+        }
+    }
 
 
     Payments payment(String paymentMethod,UserInfo user,Orders orders,double amount){

@@ -109,5 +109,11 @@ public class ProfileController {
 
     }
 
+    @PostMapping("/newAddress-checkout")
+    public ResponseEntity<String> addNewAddress(@ModelAttribute AddressDTO address,Principal principal) {
+          String email=principal.getName();
+        return profileService.newAddressCkecout(email,address);
+    }
+
 
 }

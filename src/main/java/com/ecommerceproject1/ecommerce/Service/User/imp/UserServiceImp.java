@@ -9,11 +9,14 @@ import com.ecommerceproject1.ecommerce.Exeption.ResourceNotFound;
 import com.ecommerceproject1.ecommerce.Repository.*;
 import com.ecommerceproject1.ecommerce.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.awt.print.Pageable;
 import java.util.List;
 @Service
 public class UserServiceImp implements UserService {
@@ -46,12 +49,20 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public String allproduct(Model model) {
-        List<Products>  products=productRepository.findByIsActiveTrue();
-        model.addAttribute("product",products);
-        UserInfo user=userInfoRepository.findByEmail(currentUserName());
-        Cart cart=cartRepository.findByUserUserId(user.getUserId());
-        model.addAttribute("cartItemsCount",cart.getCartProducts().size());
+    public String allproduct(Model model,int page) {
+//        int pageSize = 10; // Set your desired page size here
+//        PageRequest pageable = PageRequest.of(page, pageSize);
+//
+//        Page<Products> productsPage = productRepository.findByIsActiveTrue((Pageable) pageable);
+//        List<Products> products = productsPage.getContent();
+//
+//        model.addAttribute("product", products);
+//        UserInfo user = userInfoRepository.findByEmail(currentUserName());
+//        Cart cart = cartRepository.findByUserUserId(user.getUserId());
+//        model.addAttribute("cartItemsCount", cart.getCartProducts().size());
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", productsPage.getTotalPages());
+
         return "user/listallproduct";
     }
 

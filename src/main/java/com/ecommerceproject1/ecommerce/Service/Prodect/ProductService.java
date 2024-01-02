@@ -13,6 +13,7 @@ public interface ProductService {
     Void addProduct(Products product);
 
     List<Products> findallProduct();
+    List<Products> findAllByIsDeleteFalse();
 
     void updateproduct(Long brandId,boolean isActive);
 

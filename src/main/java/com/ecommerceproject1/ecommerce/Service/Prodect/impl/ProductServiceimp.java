@@ -31,13 +31,17 @@ public class ProductServiceimp implements ProductService {
     @Override
     public Void addProduct(Products product) {
         productRepository.save(product);
-
         return null;
     }
 
     @Override
     public List<Products> findallProduct() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public List<Products> findAllByIsDeleteFalse() {
+        return productRepository.findAllByIsDeleteFalse();
     }
 
     @Override
@@ -59,26 +63,36 @@ public class ProductServiceimp implements ProductService {
 
     @Override
     public void deteleProductbyid(Long productId) {
-        productRepository.deleteById(productId);
+        Products products=productRepository.findById(productId).orElse(null);
+        if (products != null) {
+            products.setDelete(true);
+            productRepository.save(products);
+
+        }else {
+            throw new ResourceNotFound("Product not found");
+        }
+
     }
 
     @Override
     public void deleteImages(long id) {
         Products product = productRepository.findById(id).orElse(null);
-        String UPLOAD_DIR = "C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\uploads\\";
+//        String UPLOAD_DIR = "C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\uploads\\";
 
         if (product != null) {
-            String[] imagePathString = product.getImagesPath();
-            for (String s : imagePathString) {
-                String path = UPLOAD_DIR + s;
-                Path filePath = Paths.get(path);
-                try {
-                    Files.delete(filePath);
-                } catch (IOException e) {
-                    // Handle IOException, e.g., log the error
-                    throw new RuntimeException("Error deleting file: " + e.getMessage());
-                }
-            }
+//            String[] imagePathString = product.getImagesPath();
+//            for (String s : imagePathString) {
+//                String path = UPLOAD_DIR + s;
+//                Path filePath = Paths.get(path);
+//                try {
+//                    Files.delete(filePath);
+//                } catch (IOException e) {
+//                    // Handle IOException, e.g., log the error
+//                    throw new RuntimeException("Error deleting file: " + e.getMessage());
+//                }
+//            }
+
+
         } else {
             throw new ResourceNotFound("Product not found");
         }

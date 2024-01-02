@@ -7,12 +7,16 @@ import com.ecommerceproject1.ecommerce.Repository.UserInfoRepository;
 import com.ecommerceproject1.ecommerce.Service.User.ProfileService;
 import com.ecommerceproject1.ecommerce.model.user.AddressDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -45,6 +49,27 @@ public class ProfileServiceImp implements ProfileService {
 
 
         return "redirect:/user/profile/manage-address";
+    }
+
+    @Override
+    public ResponseEntity<String> newAddressCkecout(String email, AddressDTO address) {
+            try {
+                System.out.println("working new address");
+                UserInfo user=userInfoRepository.findByEmail(email);
+                System.out.println("working user finding ");
+                Address addressDetail=addressManagement(address);
+                user.getUserAddresses().add(addressDetail);
+                System.out.println("working add adrress");
+                userInfoRepository.save(user);
+                System.out.println("working user save");
+                return ResponseEntity.ok("Address added successfully!");
+            } catch (Exception e) {
+                // Log the exception for debugging purposes
+                e.printStackTrace();
+
+                // Return an error response
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding the address");
+            }
     }
 
     @Override

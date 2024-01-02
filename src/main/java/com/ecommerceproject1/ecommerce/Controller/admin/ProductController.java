@@ -37,7 +37,7 @@ public class ProductController {
 
     @GetMapping("")
     public String prodect(Model model){
-        model.addAttribute("products",productService.);
+        model.addAttribute("products",productService.findAllByIsDeleteFalse());
         return "admin/product";
     }
     @GetMapping("/addproduct")
@@ -107,7 +107,7 @@ public class ProductController {
 
     @PostMapping("/deleteProduct/{id}")
     public String deleteProduct(@PathVariable Long id, RedirectAttributes red){
-        productService.deleteImages(id);
+//        productService.deleteImages(id);
         productService.deteleProductbyid(id);
 
         red.addFlashAttribute("deleted","product delete success full");
@@ -188,6 +188,8 @@ public class ProductController {
 
         return "redirect:/admin/product";
     }
+
+
 
 }
 

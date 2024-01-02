@@ -14,5 +14,7 @@ public interface OrderService {
 
    String myOrders(Model model);
 
+   String orderDetails(Long productId,Model model);
+
 
 }

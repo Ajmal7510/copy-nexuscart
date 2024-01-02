@@ -30,6 +30,10 @@
 
 <header th:replace="fragments/navbar :: header-nav"></header>
 
+<button th:if="${addresses !=null}" type="button" class="btn btn-primary  " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    ADD ADDRESS
+</button>
+
 <form action="" id="checkout-form" th:action="@{/user/checkout/order-item}" method="post">
     <section class="bg-white py-5">
 
@@ -48,6 +52,7 @@
                             <div class="row mb-3">
 
                                 <div class="col-lg-4 mb-3">
+
                                     <!-- Address radio -->
                                     <div th:each="address : ${addresses}" class="form-check h-100 border rounded-3">
                                         <div class="p-3">
@@ -188,26 +193,26 @@
                                 <p class="mb-2 fw-bold">₹ <span id="amount"
                                                                 th:text="${totalAmount}"></span></p>
                             </div>
-<!--                            <div class="input-group mt-1 mb-4">-->
-<!--                                <div th:unless="${coupons.size()==0}">-->
-<!--                                    <div>-->
-<!--                                        <label class="form-label fw-semibold" >Coupons : </label>-->
-<!--                                        <select class="form-select d-inline" data-live-search="true" id="coupon">-->
-<!--                                            <option disabled="disabled" selected="selected" th:each="coupon, iterStat : ${coupons}"-->
-<!--                                                    th:if="${iterStat.index == 0}">-->
-<!--                                                Select a coupon-->
-<!--                                            </option>-->
-<!--                                            <option  class="fw-semibold" style="white-space: pre-line;" th:each="coupon : ${coupons}" th:text="${coupon.couponName}" th:value="${coupon.couponId}">-->
-<!--                                            </option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-<!--                                    <button class="btn btn-light text-primary border mt-2" onclick="applyCoupon()" style="margin-top:40%; margin-left:70%;">Apply</button>-->
-<!--                                    <span class="fw-semibold text-danger text-break" id="coupon_error_msg"></span>-->
-<!--                                </div>-->
-<!--                                <div class="fw-semibold text-danger" th:if="${coupons.size()==0}">-->
-<!--                                    No coupons available for you.-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <!--                            <div class="input-group mt-1 mb-4">-->
+                            <!--                                <div th:unless="${coupons.size()==0}">-->
+                            <!--                                    <div>-->
+                            <!--                                        <label class="form-label fw-semibold" >Coupons : </label>-->
+                            <!--                                        <select class="form-select d-inline" data-live-search="true" id="coupon">-->
+                            <!--                                            <option disabled="disabled" selected="selected" th:each="coupon, iterStat : ${coupons}"-->
+                            <!--                                                    th:if="${iterStat.index == 0}">-->
+                            <!--                                                Select a coupon-->
+                            <!--                                            </option>-->
+                            <!--                                            <option  class="fw-semibold" style="white-space: pre-line;" th:each="coupon : ${coupons}" th:text="${coupon.couponName}" th:value="${coupon.couponId}">-->
+                            <!--                                            </option>-->
+                            <!--                                        </select>-->
+                            <!--                                    </div>-->
+                            <!--                                    <button class="btn btn-light text-primary border mt-2" onclick="applyCoupon()" style="margin-top:40%; margin-left:70%;">Apply</button>-->
+                            <!--                                    <span class="fw-semibold text-danger text-break" id="coupon_error_msg"></span>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="fw-semibold text-danger" th:if="${coupons.size()==0}">-->
+                            <!--                                    No coupons available for you.-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                         </div>
 
 
@@ -219,6 +224,83 @@
 
     </section>
 </form>
+
+
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg  ">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 " id="staticBackdropLabel">ADD ADDRESS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="container  mt-5 mb-5 ">
+                <div class="row mx-0 justify-content-center">
+                    <div class="col-md-6 col-lg-6">
+                        <form
+                                method="POST"
+                                class="w-100 rounded-1 p-4 border bg-white"
+                                th:action="@{/user/profile/newAddress}"
+                        >
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Name</span>
+                                <input
+                                        name="name"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="enter your name" required
+                                />
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Address line </span>
+                                <input
+                                        name="address"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Address(Area and Street) " required
+                                />
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">City</span>
+                                <input name="city" type="text" class="form-control" placeholder="City/District/Town" required/>
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">State/Province</span>
+                                <input name="state" type="text" class="form-control" placeholder="State" required/>
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Zip/Postal code</span>
+                                <input name="pin" type="text" class="form-control" placeholder="Pincode" required/>
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Phone</span>
+                                <input
+                                        name="mobile"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="10-digit mobile number" required
+                                />
+                            </label>
+
+                            <div class="mb-3  ">
+                                <button type="submit" class="btn btn-primary px-4 rounded-3">
+                                    Save
+                                </button>
+                                <button type="button" class="btn btn-danger px-4 rounded-3" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

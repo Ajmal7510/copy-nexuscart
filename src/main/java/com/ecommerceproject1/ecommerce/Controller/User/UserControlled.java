@@ -26,8 +26,8 @@ public class UserControlled {
     }
 
     @GetMapping("/shop/allproducts")
-    public String shopAllProduct(Model model){
-        return userService.allproduct(model);
+    public String allProducts(@RequestParam(defaultValue = "0") int page, Model model) {
+        return userService.allproduct(model,page);
     }
 
     @GetMapping("product-details/{id}")

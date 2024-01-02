@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 @Service
 public interface UserService {
     String shopPage(Model model);
-    String allproduct(Model model);
+    String allproduct(Model model,int page);
     String productdetails(Model model,Long id);
 
     UserInfo userInfofindByEmail(String email);

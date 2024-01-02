@@ -39,4 +39,8 @@ public class OrderControll {
     public String myOders(Model model){
         return orderService.myOrders(model);
     }
+    @GetMapping("/orderDetails")
+    public String orderDetails(@RequestParam("orderId") Long orderId, Model model) {
+        return orderService.orderDetails(orderId, model);
+    }
 }

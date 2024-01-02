@@ -25,14 +25,9 @@ public class Orders {
     private List<OrderItem> orderProducts;
 
 
-
-
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
-
-
-
 
     @Column(name = "orderDate")
     private LocalDate orderDate;
@@ -48,7 +43,7 @@ public class Orders {
     private Payments payments;
 
     @Column(name = "status")
-    private String status = "ordered";
+    private String status = "Processing";
 
     @Column(name = "amountStatus")
     private String amountStatus;
