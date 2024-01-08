@@ -2,6 +2,9 @@ package com.ecommerceproject1.ecommerce.Controller.User;
 
 import com.ecommerceproject1.ecommerce.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,8 +29,13 @@ public class UserControlled {
     }
 
     @GetMapping("/shop/allproducts")
-    public String allProducts(@RequestParam(defaultValue = "0") int page, Model model) {
-        return userService.allproduct(model,page);
+    public String allproduct(@RequestParam(name = "page", defaultValue = "0") int page,
+                             @RequestParam(name = "size", defaultValue = "10") int size,
+                             @RequestParam(value = "searchKey", required = false) String searchKey,
+                       @RequestParam(value = "type", required = false) String type,
+                       @RequestParam(value = "value", required = false) String value,
+                       Model model) {
+        return userService.allproduct(searchKey,model,type,value,page,size);
     }
 
     @GetMapping("product-details/{id}")
@@ -47,7 +55,36 @@ public class UserControlled {
     }
 
 
+    @GetMapping("/wallet")
+    public String wallet(Model model){
+        return userService.getwallet(model);
+    }
 
+
+    @GetMapping("/wishlist")
+    public String wishlist(Model model){
+        return userService.getwishlist(model);
+    }
+
+
+
+   @PutMapping("/wishlist/addProductToWishlist/{productId}")
+    public ResponseEntity<String> addProductToWishlist(@PathVariable Long productId){
+
+       try {
+           userService.addProductToWishlist(productId);
+           return ResponseEntity.ok("Banner activated successfully");
+       } catch (Exception e) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+       }
+   }
+
+    @GetMapping("/wishlist/removeProduct/{productId}")
+    public String removeProductFromWishlist(@PathVariable Long productId) {
+        userService.removeProductFromWishlist(productId);
+        return "redirect:/user/wishlist";
+
+    }
 
 }
 

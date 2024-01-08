@@ -32,6 +32,9 @@ public class RegistractionExceptionHandler {
         red.addFlashAttribute("UserBlocked","This Account has been blocked");
         return "redirect:/login";
     }
+
+
+
     @ExceptionHandler(ResourceNotFound.class)
     public String handleResourceNotFoundException(ResourceNotFound ex){
         return "404";

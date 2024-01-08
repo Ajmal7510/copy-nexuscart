@@ -36,10 +36,33 @@
           </li>
 
         </ul>
-        <form style="margin-right: 20%;" class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form th:action="@{/user/shop/allproducts}" method="get" style="margin-right: 20%;" class="d-flex">
+          <input name="searchKey" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
+        <li >
+          <div class="d-flex">
+            <a  th:href="@{/user/wallet}">
+
+              <span style="font-size: 35px; color: black; margin-right: 20px;" class="material-symbols-outlined">
+          account_balance_wallet
+               </span>
+
+
+            </a>
+          </div>
+        </li>
+        <li >
+          <div class="d-flex">
+            <a  th:href="@{/user/orders}">
+         <span style="font-size: 35px; color: black; margin-right: 20px;" class="material-symbols-outlined">
+             quick_reorder
+                 </span>
+
+
+            </a>
+          </div>
+        </li>
         <li >
           <div class="d-flex">
             <a  th:href="@{/user/cart}">
@@ -50,7 +73,7 @@
             </a>
           </div>
         </li>
-        <a href="#whishlist"><span style="font-size: 35px; color: black;" class="material-symbols-outlined">
+        <a th:href="@{/user/wishlist}"><span style="font-size: 35px; color: black;" class="material-symbols-outlined">
                 favorite
                 </span></a>
 

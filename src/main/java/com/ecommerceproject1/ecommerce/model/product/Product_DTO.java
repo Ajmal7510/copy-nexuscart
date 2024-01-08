@@ -7,6 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class Product_DTO {
 
 
+
+
     private String productName;
 
 

@@ -101,7 +101,6 @@
                 <h4>Images</h4>
                 <div class="mt-3 mb-5 d-flex justify-content-center gap-5">
                     <!--     Image 1   -->
-
                     <label class="form-label image-section" for="imageFile1" id="image-section-1">
                         <svg id="addphoto" style="width: 80px; height: 80px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M0 0h24v24H0V0z" fill="none"></path>
@@ -109,7 +108,8 @@
                         </svg>
                     </label>
                     <input accept="image/*" class="form-control image d-none" id="imageFile1" name="productImages"
-                           onchange="previewImage('imageFile1','img1','image-section-1','delete-button-1')" required type="file"/>
+                           onchange="initCropper(this, 'img1', 'image-section-1', 'delete-button-1')" required type="file"/>
+
                     <div class="d-flex flex-column">
                         <div>
                             <img id="img1" src="">
@@ -182,10 +182,10 @@
                 <div class="col-3 mt-3 mb-5 item-key words">
                     <label class="form-label" for="brand">Product brand</label>
                     <select aria-label="Default select example" class="form-select" id="brand" name="brandId" required>
-<!--                        <option disabled="disabled" selected="selected" th:each="brand, iterStat : ${brand}"-->
-<!--                                th:if="${iterStat.index == 0}">-->
-<!--                            Choose a brand-->
-<!--                        </option>-->
+                        <!--                        <option disabled="disabled" selected="selected" th:each="brand, iterStat : ${brand}"-->
+                        <!--                                th:if="${iterStat.index == 0}">-->
+                        <!--                            Choose a brand-->
+                        <!--                        </option>-->
                         <option th:each="brand : ${brands}" th:text="${brand.brandName}" th:value="${brand.brandId}">
                         </option>
                     </select>
@@ -196,10 +196,10 @@
                 <div class="col-3 mt-3 mb-5 item-key words">
                     <label class="form-label" for="category">Product category</label>
                     <select aria-label="Default select example" class="form-select" id="category" name="categoryId" onchange="updateFilters()" required>
-<!--                        <option disabled="disabled" selected="selected" th:each="category, iterStat : ${category}"-->
-<!--                                th:if="${iterStat.index == 0}">-->
-<!--                            Choose a category-->
-<!--                        </option>-->
+                        <!--                        <option disabled="disabled" selected="selected" th:each="category, iterStat : ${category}"-->
+                        <!--                                th:if="${iterStat.index == 0}">-->
+                        <!--                            Choose a category-->
+                        <!--                        </option>-->
                         <option th:each="category : ${categories}" th:text="${category.categoryName}"
                                 th:value="${category.categoryId}">
                         </option>

@@ -3,9 +3,13 @@ package com.ecommerceproject1.ecommerce.Config.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -22,10 +26,10 @@ public class SecurityConfigeration {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(
                 aouth->aouth
-                        .requestMatchers("/**","/login","signup","toOtp").permitAll()
+
                         .requestMatchers("admin/**").hasAuthority("ADMIN")
                         .requestMatchers("user/**").hasAnyAuthority("USER","ADMIN")
-
+                        .requestMatchers("/**","/login","signup","toOtp").permitAll()
                         .anyRequest().authenticated()
                          )
 
@@ -34,8 +38,16 @@ public class SecurityConfigeration {
                                          .loginPage("/login").permitAll()
                                          .successHandler(scucessHandler)
                                          .failureHandler((request, response, exception) -> {
-                                                     request.getSession().setAttribute("loginError","Invalid UserName or Password");
+                                                     if (exception != null) {
+
+                                                         if (((AuthenticationException) exception).getCause() instanceof DisabledException) {
+                                                             request.getSession().setAttribute("loginError", "Your account is disabled. Please contact support.");
+                                                         } else {
+                                                             request.getSession().setAttribute("loginError", "Invalid Email or Password");
+                                                         }
+                                                     }
                                                      response.sendRedirect("/login");
+
                                                  }
 
                                                  )
@@ -73,6 +85,11 @@ public class SecurityConfigeration {
         return repository;
     }
 
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
 
 
 }

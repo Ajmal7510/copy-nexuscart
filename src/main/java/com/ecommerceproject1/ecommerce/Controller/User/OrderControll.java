@@ -19,8 +19,8 @@ public class OrderControll {
     private OrderService orderService;
 
     @GetMapping("/checkout")
-    public String checkOut(Model model) {
-        return orderService.checkOut(model);
+    public String checkOut( @RequestParam(name = "couponCode", required = false) String couponCode,Model model) {
+        return orderService.checkOut(couponCode,model);
     }
 
 
@@ -31,8 +31,9 @@ public class OrderControll {
 
     @PostMapping("/checkout/order-item")
     public String orderItem(@RequestParam(name = "address") long addressId,
-                            @RequestParam(name = "payment") String payment)  {
-        return orderService.orderitem(addressId,payment);
+                            @RequestParam(name = "payment") String payment,
+                            @RequestParam(name = "coupon",required = false) String coupon)  {
+        return orderService.orderitem(addressId,payment,coupon);
     }
 
     @GetMapping("/orders")
@@ -42,5 +43,15 @@ public class OrderControll {
     @GetMapping("/orderDetails")
     public String orderDetails(@RequestParam("orderId") Long orderId, Model model) {
         return orderService.orderDetails(orderId, model);
+    }
+
+    @GetMapping("/cancelOrder")
+    public String cancelOrder(@RequestParam("orderId") Long orderId) {
+        return orderService.cancelOrder(orderId);
+    }
+
+    @GetMapping("/returnOrder")
+    public String returnOreder(@RequestParam("orderId")Long orderId){
+        return orderService.returnOrder(orderId);
     }
 }

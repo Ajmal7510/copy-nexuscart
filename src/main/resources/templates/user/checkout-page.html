@@ -27,10 +27,10 @@
 
 </head>
 <body>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <header th:replace="fragments/navbar :: header-nav"></header>
 
-<button th:if="${addresses !=null}" type="button" class="btn btn-primary  " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+<button th:if="${address !=null}" type="button" class="btn btn-primary  " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     ADD ADDRESS
 </button>
 
@@ -49,7 +49,7 @@
                     <div class="card shadow-0 border">
                         <div class="p-4">
                             <h5 class="card-title mb-3">Select Address</h5>
-                            <div class="row mb-3">
+                            <div class=" mb-3">
 
                                 <div class="col-lg-4 mb-3">
 
@@ -108,7 +108,47 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-lg-4 mb-3">
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input required class="form-check-input" type="radio"
+                                                   name="payment" id="flexRadioDefault4"
 
+                                                   value="online" />
+
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                <strong>
+                                                    Online-Payment
+                                                </strong> <br />
+                                                <small class="text-muted">Payment: ONLINE
+                                                </small><br>
+                                                <small class="text-muted">Type: pay to online</small>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input required class="form-check-input" type="radio"
+                                                   name="payment" id="flexRadioDefault3"
+                                                   th:disabled="${totalAmount > wallet.walletTotalAmount}"
+                                                   value="wallet" />
+
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                <strong>
+                                                    Wallet
+                                                </strong> <br />
+                                                <small class="text-muted">Payment: Wallet
+                                                </small><br>
+                                                <small class="text-muted">Balance:<span th:text="${wallet.walletTotalAmount}"></span>
+                                                </small><br>
+                                                <small class="text-muted">Type: wallet to Pay</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
 
 
                             </div>
@@ -124,9 +164,9 @@
                                                    value="  Specmen" />
                                             <label class="form-check-label" for="flexRadioDefault3">
                                                 <strong>
-                                                    SPECMEN
+                                                    STANDERD
                                                 </strong><br />
-                                                <small class="text-muted">Partner: Specmen
+                                                <small class="text-muted">Partner:
                                                 </small><br>
                                                 <small class="text-muted">Type: Standerd
                                                 </small><br>
@@ -139,7 +179,9 @@
                             </div>
                             <div class="float-end">
                                 <a href="/user/user-cart"><p class="btn btn-light border" style="margin-top: 15px;">Cancel </p></a>
-                                <button class="btn btn-success shadow-0 border" type="submit">Place Order</button>
+<!--                                <button class="btn btn-success shadow-0 border" type="submit">Place Order</button>-->
+
+                                <button class="btn btn-success shadow-0 border" type="button" onclick="handlePayment()">Place Order</button>
                             </div>
                         </div>
                     </div>
@@ -185,37 +227,38 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2">Discount:</p>
-                                <p class="mb-2 fw-semibold text-danger">- ₹ <span th:text="${totalAmount}"></span></p>
+                                <p class="mb-2 fw-semibold text-danger">- ₹ <span th:text="${discountAmount}"></span></p>
                             </div>
                             <hr />
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2 fw-bold">Total price:</p>
                                 <p class="mb-2 fw-bold">₹ <span id="amount"
                                                                 th:text="${totalAmount}"></span></p>
+                                <input type="hidden" id="razorpay_amount" name="amount"  th:value="${totalAmount}"/>
+
+
                             </div>
-                            <!--                            <div class="input-group mt-1 mb-4">-->
-                            <!--                                <div th:unless="${coupons.size()==0}">-->
-                            <!--                                    <div>-->
-                            <!--                                        <label class="form-label fw-semibold" >Coupons : </label>-->
-                            <!--                                        <select class="form-select d-inline" data-live-search="true" id="coupon">-->
-                            <!--                                            <option disabled="disabled" selected="selected" th:each="coupon, iterStat : ${coupons}"-->
-                            <!--                                                    th:if="${iterStat.index == 0}">-->
-                            <!--                                                Select a coupon-->
-                            <!--                                            </option>-->
-                            <!--                                            <option  class="fw-semibold" style="white-space: pre-line;" th:each="coupon : ${coupons}" th:text="${coupon.couponName}" th:value="${coupon.couponId}">-->
-                            <!--                                            </option>-->
-                            <!--                                        </select>-->
-                            <!--                                    </div>-->
-                            <!--                                    <button class="btn btn-light text-primary border mt-2" onclick="applyCoupon()" style="margin-top:40%; margin-left:70%;">Apply</button>-->
-                            <!--                                    <span class="fw-semibold text-danger text-break" id="coupon_error_msg"></span>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="fw-semibold text-danger" th:if="${coupons.size()==0}">-->
-                            <!--                                    No coupons available for you.-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
+
+
+
                         </div>
 
+                        <div class="mb-5">
+                            <p style="color: green" th:text="${successCoupon}"></p>
+                            <p style="color: red" th:text="${amountError}"></p>
+                            <p style="color: red" th:text="${invalid}"></p>
 
+                            <div  th:if="${showinput}" class="form-outline">
+                                <label class="form-label" for="form3Examplea2">Enter coupon code</label>
+                                <input type="text" id="couponinp" class="form-control form-control-lg" />
+
+                                <button class="btn btn-success shadow-0 border" type="button" onclick="applyCoupon()">Apply Coupon</button>
+                            </div>
+                            <div th:if="${appliedCoupon}" class="form-outline">
+                                <label class="form-label" for="form3Examplea2">Enter coupon code</label>
+                                <input name="coupon" th:value="${appliedCoupon}" type="text" id="coupo"   class="form-control form-control-lg" disabled />
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -243,6 +286,7 @@
                                 class="w-100 rounded-1 p-4 border bg-white"
                                 th:action="@{/user/profile/newAddress}"
                         >
+                            <input type="hidden" id="razorpay_order_id" name="razorpay_order_id" />
                             <label class="d-block mb-4">
                                 <span class="form-label d-block">Name</span>
                                 <input
@@ -314,6 +358,58 @@
         crossorigin="anonymous"
 ></script>
 
+<script th:inline="javascript">
 
+    function applyCoupon() {
+        var couponCode = document.getElementById("couponinp").value;
+        var redirectUrl = '/user/checkout?couponCode=' + encodeURIComponent(couponCode);
+
+        // Redirect to the checkout URL with the coupon code
+        window.location.href = redirectUrl;
+    }
+
+    function handlePayment() {
+        var selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+        var totalAmount = document.getElementById("razorpay_amount").value;
+
+        if (selectedPayment === "online") {
+            // Handle Razorpay payment
+            var options = {
+                key: "rzp_test_JdTHyVvjuNu7TX", // Replace with your actual Razorpay API key
+                amount: totalAmount *100,
+                name: 'Your Company Name',
+                description: 'Payment for Order #123',
+                handler: razorpayPaymentHandler,  // Call this function on successful payment
+                prefill: {
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    contact: '1234567890'
+                },
+                theme: {
+                    color: '#F37254'
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            // For cash on delivery, submit the form directly
+            document.getElementById("checkout-form").submit();
+        }
+    }
+
+    // Callback function from Razorpay response
+    function razorpayPaymentHandler(response) {
+        console.log(response);
+        if (response.razorpay_payment_id) {
+            // Payment successful, update the hidden form field with Razorpay order ID
+            document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+            // Submit the form to your server for processing
+            document.getElementById("checkout-form").submit();
+        } else {
+            // Payment failed, handle accordingly (e.g., show an error message)
+            alert('Payment failed. Please try again.');
+        }
+    }
+</script>
 </body>
 </html>

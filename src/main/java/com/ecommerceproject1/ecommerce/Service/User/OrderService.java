@@ -7,14 +7,18 @@ import org.springframework.ui.Model;
 @Service
 public interface OrderService {
 
-    String checkOut(Model model);
+    String checkOut(String coupen,Model model);
    ResponseEntity<Boolean> checkOutValidation(Model model);
 
-   String orderitem(Long addressId,String payment);
+   String orderitem(Long addressId,String payment,String order);
 
    String myOrders(Model model);
 
    String orderDetails(Long productId,Model model);
+
+   String cancelOrder(Long orderId);
+
+   String returnOrder(Long orderId);
 
 
 }

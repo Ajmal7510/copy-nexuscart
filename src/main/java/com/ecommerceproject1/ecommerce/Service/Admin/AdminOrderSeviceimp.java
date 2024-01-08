@@ -63,10 +63,13 @@ public class AdminOrderSeviceimp implements AdminOrderService{
                 order.getPayments().setPaymentTime(dateFinder(0).toString());
             } else if (status.equals("Cancelled")) {
                 order.setCancelled(true);
+                order.setRefundStatus(true);
+            }else if (status.equals("Returned")){
+              order.setRefundStatus(true);
             }
 
             order.setStatus(status);
-            orderRepository.save(order);
+            orderRepository.save(order);    
             // Assuming success for this example
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");
@@ -86,7 +89,6 @@ public class AdminOrderSeviceimp implements AdminOrderService{
        try {
            Orders orders=orderRepository.findById(orderId).get();
            model.addAttribute("order",orders);
-
            return "admin/OrderDetails";
        }catch (Exception e){
            return "Exeption/404";

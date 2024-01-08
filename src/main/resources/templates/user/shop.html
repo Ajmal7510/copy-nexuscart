@@ -33,13 +33,13 @@
     <div style="width: 84%;height: 50vh;margin-left: 8%;" id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img style="width: 100%;height: 50vh;" src="https://www.shutterstock.com/image-vector/33-shopping-day-poster-banner-260nw-2268450221.jpg" class="d-block w-100" alt="...">
+                <img style="width: 100%;height: 50vh;" th:src="@{'/banner/' + ${banner.imagesPath[0]}}" class="d-block w-100" alt="...">
             </div>
             <div class="carousel-item">
-                <img style="width: 100%;height: 50vh;" src="https://www.shutterstock.com/image-vector/33-shopping-day-poster-banner-260nw-2268450221.jpg" class="d-block w-100" alt="...">
+                <img style="width: 100%;height: 50vh;" th:src="@{'/banner/' + ${banner.imagesPath[1]}}" class="d-block w-100" alt="...">
             </div>
             <div class="carousel-item">
-                <img style="width: 100%;height: 50vh;" src="https://www.shutterstock.com/image-vector/33-shopping-day-poster-banner-260nw-2268450221.jpg" class="d-block w-100" alt="...">
+                <img style="width: 100%;height: 50vh;" th:src="@{'/banner/' + ${banner.imagesPath[2]}}" class="d-block w-100" alt="...">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -100,7 +100,7 @@
                                 <span class="float-start"><a href="#"><i class="fas fa-question-circle"></i></a></span>
 
                                 <span class="float-end">
-                       <button > <i class="far fa-heart" style="cursor: pointer"></i></button>
+                       <button th:onclick="'addToWishlist(\'' + ${product.productID} + '\')'"> <i class="far fa-heart" style="cursor: pointer"></i></button>
 
                       </span>
 
@@ -114,6 +114,57 @@
 
 
 </main>
+
+
+
+<!--<script>-->
+<!--    function addToWishlist(productId) {-->
+<!--        const url = `/user/wishlist/addProductToWishlist/${productId}`;-->
+<!--        console.log(productId)-->
+
+<!--        fetch(url, {-->
+<!--            method: 'PUT',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json',-->
+<!--                'X-CSRF-TOKEN': getCsrfToken(),-->
+<!--            },-->
+<!--            body: JSON.stringify({-->
+<!--                // You may send additional data if neededd-->
+<!--            }),-->
+<!--        })-->
+<!--            .then(res => {-->
+<!--                if (res.ok) {-->
+<!--                    console.log("Added to wishlist successfully");-->
+<!--                    // Show a success message using Swal-->
+<!--                    Swal.fire({-->
+<!--                        icon: 'success',-->
+<!--                        title: 'Product added to wishlist successfully',-->
+<!--                        showConfirmButton: false,-->
+<!--                        timer: 2000-->
+<!--                    });-->
+
+<!--                    window.location.reload();-->
+<!--                } else {-->
+<!--                    console.error("Failed to add to whislist");-->
+<!--                    // Show an error message using Swal-->
+<!--                    Swal.fire({-->
+<!--                        icon: 'error',-->
+<!--                        title: 'Error adding product to cart',-->
+<!--                        text: 'Please try again later.'-->
+<!--                    });-->
+<!--                }-->
+<!--            })-->
+<!--            .catch((error) => {-->
+<!--                console.error('Error:', error);-->
+<!--                window.location.reload();-->
+<!--            });-->
+<!--    }-->
+
+<!--    function getCsrfToken() {-->
+<!--        return document.querySelector('meta[name="_csrf"]').content;-->
+<!--    }-->
+<!--</script>-->
+
 
 
 
@@ -184,6 +235,50 @@
                     text: 'Please try again later.'
                 });
             });
+    }
+
+    function addToWishlist(productId) {
+        const url = `/user/wishlist/addProductToWishlist/${productId}`;
+        console.log(productId)
+        fetch(url, {
+            method: 'put',
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken(),
+            },
+
+        })
+            .then(res => {
+                if (res.ok) {
+                    console.log("Added to cart successfully");
+                    // Show a success message using Swal
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Product added to cart successfully',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    window.location.reload();
+                } else {
+                    console.error("Failed to add to cart");
+                    // Show an error message using Swal
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error adding product to cart',
+                        text: 'Please try again later.'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Error adding to cart:', err);
+                // Show a generic error message using Swal
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: 'Please try again later.'
+                });
+            });
+
     }
 
     function getCsrfToken() {

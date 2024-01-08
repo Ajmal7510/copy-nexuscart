@@ -126,12 +126,12 @@
 
                     <h5 class="text-uppercase mb-3">Give coupon code</h5>
 
-                    <div class="mb-5">
-                      <div class="form-outline">
-                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                        <label class="form-label" for="form3Examplea2">Enter coupon code</label>
-                      </div>
-                    </div>
+<!--                    <div class="mb-5">-->
+<!--                      <div class="form-outline">-->
+<!--                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />-->
+<!--                        <label class="form-label" for="form3Examplea2">Enter coupon code</label>-->
+<!--                      </div>-->
+<!--                    </div>-->
 
                     <hr class="my-4">
 
@@ -248,6 +248,7 @@
   function removeProduct(){
     const removeToCartURL = '/user/cart/removeFromCart';
     const productId = document.getElementById('productId').value;
+    console.log(productId)
 
     // Create FormData and append the product ID
     const formData = new FormData();

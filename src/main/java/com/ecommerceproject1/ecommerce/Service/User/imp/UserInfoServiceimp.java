@@ -13,6 +13,9 @@ import com.ecommerceproject1.ecommerce.Service.Verification.RedisService;
 import com.ecommerceproject1.ecommerce.model.user.UserDto;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,8 +51,8 @@ UserInfoServiceimp implements UserInfoService {
     @Autowired
     private WishlistService wishlistService;
 
-
-
+    @Autowired
+    private SessionRegistry sessionRegistry;
 
     @Override
     public void registerUser(UserDto user) throws UserAlredyExistException {
@@ -118,6 +121,22 @@ UserInfoServiceimp implements UserInfoService {
         if (user != null) {
             user.setEnabled(isEnabled);
             userInfoRepository.save(user);
+            invalidateUserSession(user.getEmail());
+        }
+    }
+
+    private void invalidateUserSession(String username) {
+        // Find all sessions associated with the user
+        for (Object principal : sessionRegistry.getAllPrincipals()) {
+            if (principal instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principal;
+                if (userDetails.getUsername().equals(username)) {
+                    // Invalidate each session
+                    for (SessionInformation sessionInformation : sessionRegistry.getAllSessions(userDetails, false)) {
+                        sessionInformation.expireNow();
+                    }
+                }
+            }
         }
     }
 

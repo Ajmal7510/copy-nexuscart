@@ -37,6 +37,9 @@ public class UserInfo {
     @OneToMany(mappedBy = "user")
     private List<Orders> orders;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Wallet wallet;
+
 
     @Override
     public boolean equals(Object o) {

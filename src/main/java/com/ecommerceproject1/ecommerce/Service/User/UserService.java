@@ -9,10 +9,16 @@ import org.springframework.ui.Model;
 @Service
 public interface UserService {
     String shopPage(Model model);
-    String allproduct(Model model,int page);
+    String allproduct(String searchKey, Model model, String type, String value,int page,int size);
     String productdetails(Model model,Long id);
 
     UserInfo userInfofindByEmail(String email);
     public String currentUserName();
+    String getwallet(Model model);
+
+    String getwishlist(Model model);
+
+   void addProductToWishlist(Long productId);
+   void removeProductFromWishlist(Long productId);
 
 }

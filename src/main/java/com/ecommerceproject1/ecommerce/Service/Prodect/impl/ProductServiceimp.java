@@ -66,6 +66,7 @@ public class ProductServiceimp implements ProductService {
         Products products=productRepository.findById(productId).orElse(null);
         if (products != null) {
             products.setDelete(true);
+            products.setActive(false);
             productRepository.save(products);
 
         }else {
