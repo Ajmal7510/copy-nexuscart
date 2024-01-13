@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Offers {
+public class ProductOffers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long offerId;
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
-    private Brands brands;
-    private Float discountPec;
+    private Float discountAmount;
+    @OneToOne
+    @JoinColumn(name = "product_id")
+    private Products products;
 }

@@ -2,6 +2,7 @@ package com.ecommerceproject1.ecommerce.Controller.admin;
 
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Brands;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Categories;
+import com.ecommerceproject1.ecommerce.Service.Offers.CategoryOfferService;
 import com.ecommerceproject1.ecommerce.Service.Prodect.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryOfferService categoryOfferService;
 
     @GetMapping("")
     public String category(Model model){
@@ -35,6 +39,7 @@ public class CategoryController {
             Categories categories=new Categories();
             categories.setCategoryName(categoryName);
             categoryService.SaveCategory(categories);
+            categoryOfferService.createCategoryOffer(categories);
             red.addFlashAttribute("categoryAddSuccess","Successfully Add New Category");
             return "redirect:/admin/category";
         }

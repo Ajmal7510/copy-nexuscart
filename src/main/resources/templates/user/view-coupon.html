@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Coupon</title>
+
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" th:href="@{/user/home/assets/style.css}" type="text/css">
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <link rel="stylesheet" th:href="@{/user/home/assets/style.css}" type="text/css">
+
+    <style>
+        body {
+            background: #eee;
+        }
+
+        .card {
+            width: 100%; /* Change width to 100% for responsiveness */
+            padding: 10px;
+            border-radius: 20px;
+            background: orange;
+            border: none;
+            color: #fff;
+            height: 350px;
+            display: flex;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0; /* Add margin for spacing between cards */
+        }
+
+        .container {
+            height: 100vh;
+        }
+
+        .card h1 {
+            font-size: 48px;
+            margin-bottom: 0px;
+        }
+
+        .card span {
+            font-size: 28px;
+        }
+
+        .image {
+            position: absolute;
+            opacity: .1;
+            left: 0;
+            top: 0;
+        }
+
+        .image2 {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            opacity: .1;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                height: auto; /* Adjust height for smaller screens */
+                flex-direction: column; /* Change flex direction for stacking content */
+            }
+
+            .card h1 {
+                font-size: 36px; /* Adjust font size for smaller screens */
+            }
+
+            .card span {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header th:replace="fragments/navbar :: header-nav"></header>
+
+<div class="container">
+    <div class="row">
+        <div th:each="coupon, stat : ${coupons}" class="d-flex">
+            <div class="d-flex card text-center">
+                <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                <h1><span th:text="${coupon.discountPercentage}"></span>% OFF</h1><span class="d-block">On <span th:text="${coupon.expirationDate}"></span></span><span class="d-block" th:text="${coupon.couponName}"></span>
+                <div class="mt-4">
+                    <h3 >MINIMUM PURCHASE AMOUNT:<span th:text="${coupon.minimumAmount}"></span></h3>
+                    <h4>With Code: <span th:text="${coupon.couponCode}" th:id="${coupon.couponId+'cpnCode'}" ></span></h4>
+                    <button th:id="${coupon.couponId+'copBtn'}" style="background-color: transparent" class="btn">Copy Code</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repeat your card elements for each coupon -->
+
+    </div>
+</div>
+
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+<!-- SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- Copy code functionality script -->
+<script th:each="coupon : ${coupons}">
+    /* Iterate through each coupon and add an event listener for the copy button */
+    document.getElementById( [[${coupon.couponId}]]+"copBtn").addEventListener("click", function() {
+        var cpnCode = document.getElementById([[${coupon.couponId}]]+"cpnCode");
+        var tempInput = document.createElement("input");
+        document.body.appendChild(tempInput);
+        tempInput.value = cpnCode.innerText;
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+
+        /* Optionally, you can provide a user-friendly message or use SweetAlert2 for a better UI */
+        Swal.fire({
+            icon: 'success',
+            title: 'Coupon Code Copied!',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+</script>
+</body>
+</html>

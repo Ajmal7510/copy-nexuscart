@@ -94,7 +94,7 @@
             <td class="text-center"><img width="50px" height="50px" th:src="@{'/uploads/'+${product.imagesPath[0]}}" alt="ddd" > </img></td>
             <td class="text-center" th:text="${product.getBrand().getBrandName()}"></td>
             <td class="text-center" th:text="${product.getCategory().getCategoryName()}"></td>
-            <td class="text-center" th:text="${product.price}"></td>
+            <td class="text-center" th:text="${product.price + product.productDiscountAmout}"></td>
             <td class="text-center" th:text="${product.stock}"></td>
             <td><span style="color: green" th:if="${product.isActive == true}">Available</span>
               <span style="color: red" th:if="${product.isActive != true}">Unavailable</span>

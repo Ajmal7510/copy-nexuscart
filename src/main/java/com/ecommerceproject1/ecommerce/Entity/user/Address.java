@@ -19,10 +19,11 @@ public class Address {
     private String mobile;
     private String address;
     private String city;
-
     private String pin;
-
     private String state;
+
+
+   private Boolean isDelete=false;
 
     @Transient
     public String getFullAddress() {

@@ -1,10 +1,9 @@
 package com.ecommerceproject1.ecommerce.Service.User.imp;
 
-import com.ecommerceproject1.ecommerce.Entity.user.Cart;
-import com.ecommerceproject1.ecommerce.Entity.user.UserInfo;
-import com.ecommerceproject1.ecommerce.Entity.user.Wishlist;
+import com.ecommerceproject1.ecommerce.Entity.user.*;
 import com.ecommerceproject1.ecommerce.Exeption.UserAlredyExistException;
 import com.ecommerceproject1.ecommerce.Repository.UserInfoRepository;
+import com.ecommerceproject1.ecommerce.Repository.WalletRepository;
 import com.ecommerceproject1.ecommerce.Service.User.CartService;
 import com.ecommerceproject1.ecommerce.Service.User.UserInfoService;
 import com.ecommerceproject1.ecommerce.Service.User.WishlistService;
@@ -19,6 +18,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -53,6 +55,9 @@ UserInfoServiceimp implements UserInfoService {
 
     @Autowired
     private SessionRegistry sessionRegistry;
+
+    @Autowired
+    private WalletRepository walletRepository;
 
     @Override
     public void registerUser(UserDto user) throws UserAlredyExistException {
@@ -98,7 +103,14 @@ UserInfoServiceimp implements UserInfoService {
         user.setRole("USER");
         cart.setUser(user);
         wishlist.setUser(user);
+        user.setReferralCode(userDto.getName()+user.getUserId());
         userInfoRepository.save(user);
+
+        UserInfo user1=userInfoRepository.findByEmail(userDto.getEmail());
+        user1.setReferralCode(userDto.getName()+user.getUserId());
+        userInfoRepository.save(user1);
+
+
     }
 
     public void resentOtp(String email){
@@ -123,6 +135,42 @@ UserInfoServiceimp implements UserInfoService {
             userInfoRepository.save(user);
             invalidateUserSession(user.getEmail());
         }
+    }
+
+    @Override
+    public void referral(String referralCode) {
+        UserInfo user=userInfoRepository.findByReferralCode(referralCode);
+        if(user==null){
+            System.out.println("user is null");
+        }
+        Wallet wallet=walletRepository.findByUser(user);
+        List<WalletHistory> walletHistories;
+
+        if (wallet == null) {
+            wallet = new Wallet();
+            walletHistories = new ArrayList<>();
+        } else {
+            walletHistories = wallet.getWalletHistory();
+        }
+        WalletHistory walletHistory = new WalletHistory();
+        walletHistory.setAddedAmount(100);
+        walletHistory.setDepositOrWithdraw("Credited For Referral");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        walletHistory.setAmountAddedTime(currentDateTime.format(formatter));
+        walletHistory.setWallet(wallet);
+
+        walletHistories.add(walletHistory);
+
+        double totalAmount = walletHistories.stream().mapToDouble(WalletHistory::getAddedAmount).sum();
+
+
+        wallet.setWalletTotalAmount(totalAmount);
+
+
+        wallet.setWalletHistory(walletHistories);
+        wallet.setUser(user);
+        walletRepository.save(wallet);
     }
 
     private void invalidateUserSession(String username) {

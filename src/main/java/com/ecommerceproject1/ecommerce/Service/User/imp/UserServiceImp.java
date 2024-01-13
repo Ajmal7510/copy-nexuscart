@@ -1,5 +1,6 @@
 package com.ecommerceproject1.ecommerce.Service.User.imp;
 
+import com.ecommerceproject1.ecommerce.Entity.Admin.Coupon;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Brands;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Categories;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Products;
@@ -10,13 +11,16 @@ import com.ecommerceproject1.ecommerce.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.awt.print.Pageable;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +49,9 @@ public class UserServiceImp implements UserService {
   @Autowired
   private WalletRepository walletRepository;
 
+  @Autowired
+  private CouponRepository couponRepository;
+
 
 
 
@@ -63,57 +70,75 @@ public class UserServiceImp implements UserService {
         return "user/shop";
     }
 
-    @Override
-    public String allproduct(String searchKey, Model model, String type, String value,int page,int size) {
+//    allproduct(searchKey,model,type,value,page,size,pageable);
+@Override
+public String allproduct(String searchKey, Model model, String brand, String category, String priceRange, int page, int size, Pageable pageable) {
+    // Parse price range (assuming it's in the format "min-max")
+    Float minPrice = null;
+    Float maxPrice = null;
 
-        // Validate and sanitize input parameters
-        if (page < 0) {
-            page = 0;
+    if (priceRange != null) {
+        String[] prices = priceRange.split("-");
+        if (prices.length == 2) {
+            minPrice = Float.parseFloat(prices[0]);
+            maxPrice = Float.parseFloat(prices[1]);
         }
-        if (size <= 0) {
-            size = 10; // or any default size you prefer
-        }
-
-
-        List<Categories> categories = categoryRepository.findAll();
-
-        model.addAttribute("categories", categories);
-
-
-        Page<Products> productsPage = null;
-
-        if (searchKey == null && type == null && value == null) {
-//            List<Products> products = productRepository.findAllByIsActiveTrueAndIsDeleteFalse();
-
-            productsPage = productRepository.findAllByIsActiveTrueAndIsDeleteFalse((Pageable) PageRequest.of(page, size));
-//            System.out.println(products);
-
-//            model.addAttribute("products", products);
-        } else if (type != null && value != null) {
-
-//            List<Products> filetProducts = filterByTypeValue(type, value);
-//
-//            model.addAttribute("products", filetProducts);
-
-        } else {
-            List<Products> productsList = productRepository.findActiveNotDeletedProductsContainingName(searchKey);
-//            productsPage = productRepository.findActiveNotDeletedProductsContainingName(searchKey, PageRequest.of(page, size));
-
-//            if (!(productsList.isEmpty())) {
-//                model.addAttribute("products", productsList);
-//            }
-        }
-
-
-        model.addAttribute("products", productsPage.getContent());
-
-        // Add pagination information to the model
-        model.addAttribute("currentPage", productsPage.getNumber());
-        model.addAttribute("totalPages", productsPage.getTotalPages());
-        model.addAttribute("totalItems", productsPage.getTotalElements());
-        return "user/listallproduct";
-
     }
+
+    // Validate and sanitize input parameters
+    if (page < 0) {
+        page = 0;
+    }
+    if (size <= 0) {
+        size = 10; // or any default size you prefer
+    }
+
+    List<Brands> brandsList = brandsRepository.findAll();
+    List<Categories> categoriesList = categoryRepository.findAll();
+
+    model.addAttribute("categories", categoriesList);
+    model.addAttribute("brands", brandsList);
+
+    // Check if brand and category are present
+    if (brand != null && category != null) {
+        // Check if price range is also present
+        if (minPrice != null && maxPrice != null) {
+            Page<Products> productsPage = productRepository.findByBrandBrandNameAndCategoryCategoryNameAndPriceBetweenAndIsActiveTrueAndIsDeleteFalse(
+                    brand, category, minPrice, maxPrice, pageable
+            );
+            model.addAttribute("products", productsPage);
+        } else {
+            // Only brand and category are present
+            Page<Products> productsPage = productRepository.findByBrandBrandNameAndCategoryCategoryNameAndIsActiveTrueAndIsDeleteFalse(
+                    brand, category, pageable
+            );
+            model.addAttribute("products", productsPage);
+        }
+    } else if (category != null) {
+        // Only category is present
+        Page<Products> productsPage = productRepository.findByCategoryCategoryNameAndIsActiveTrueAndIsDeleteFalse(
+                category, pageable
+        );
+        model.addAttribute("products", productsPage);
+    } else if (brand != null) {
+        // Only brand is present
+        Page<Products> productsPage = productRepository.findByBrandBrandNameAndIsActiveTrueAndIsDeleteFalse(
+                brand, pageable
+        );
+        model.addAttribute("products", productsPage);
+    } else if (searchKey != null) {
+        // Only search key is present
+        Page<Products> productsPage = productRepository.findActiveNotDeletedProductsContainingName(searchKey, pageable);
+        model.addAttribute("products", productsPage);
+    } else {
+        // No specific filter, show all products
+        Page<Products> productsPage = productRepository.findAllByIsActiveTrueAndIsDeleteFalse(pageable);
+        model.addAttribute("products", productsPage);
+    }
+
+    return "user/listallproduct";
+}
+
 
 
     @Override
@@ -215,6 +240,15 @@ public class UserServiceImp implements UserService {
             wishlist.getWishlistItems().remove(wishlistItem);
             wishlistRepository.save(wishlist);
         });
+    }
+
+    @Override
+    public String viewCoupon(Model model) {
+        LocalDate currentDate = LocalDate.now();
+
+        List<Coupon> coupons=couponRepository.findByIsActiveAndExpirationDateAfter(true,currentDate);
+        model.addAttribute("coupons",coupons);
+         return "user/view-coupon";
     }
 
 }

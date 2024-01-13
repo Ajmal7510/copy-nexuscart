@@ -2,6 +2,7 @@ package com.ecommerceproject1.ecommerce.Service.User.imp;
 
 import com.ecommerceproject1.ecommerce.Entity.user.Address;
 import com.ecommerceproject1.ecommerce.Entity.user.UserInfo;
+import com.ecommerceproject1.ecommerce.Exeption.ResourceNotFound;
 import com.ecommerceproject1.ecommerce.Repository.AddressRepository;
 import com.ecommerceproject1.ecommerce.Repository.UserInfoRepository;
 import com.ecommerceproject1.ecommerce.Service.User.ProfileService;
@@ -77,9 +78,13 @@ public class ProfileServiceImp implements ProfileService {
         Map<String, Object> response = new HashMap<>();
         try {
             // Attempt to delete the address
-            addressRepository.deleteById(addressId);
+            Address address=addressRepository.findById(addressId).orElse(null);
 
-            // If deletion is successful
+            address.setIsDelete(true);
+            addressRepository.save(address);
+//
+//
+//             If deletion is successful
             response.put("success", true);
             response.put("message", "Address deleted successfully");
         } catch (Exception e) {

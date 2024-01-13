@@ -1,7 +1,10 @@
 package com.ecommerceproject1.ecommerce.Controller.admin;
 
+import com.ecommerceproject1.ecommerce.Entity.Prodect.ProductOffer;
 import com.ecommerceproject1.ecommerce.Entity.Prodect.Products;
 import com.ecommerceproject1.ecommerce.Exeption.ResourceNotFound;
+import com.ecommerceproject1.ecommerce.Repository.CategoryOfferRepository;
+import com.ecommerceproject1.ecommerce.Repository.ProductOfferRepository;
 import com.ecommerceproject1.ecommerce.Service.Prodect.CategoryService;
 import com.ecommerceproject1.ecommerce.Service.Prodect.ProductService;
 import com.ecommerceproject1.ecommerce.model.product.Product_DTO;
@@ -33,6 +36,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductOfferRepository productOfferRepository;
+
+    @Autowired
+   private CategoryOfferRepository categoryOfferRepository;
 
 
     @GetMapping("")
@@ -74,6 +83,19 @@ public class ProductController {
         product.setBrand(categoryService.getBrandById(productDTO.getBrandId()));
         product.setRam(productDTO.getRam()+"GB");
         product.setStorage(productDTO.getStorage()+"GB");
+
+        product.setCategoryOffer(categoryOfferRepository.findByCategory(categoryService.getCategoryById(productDTO.getCategoryId())));
+
+
+
+//        ProductOffer productOffer = new ProductOffer();
+//        productOffer.setDiscountAmount(0f);
+//        productOffer.setProducts(product); // Associate the offer with the product
+////        productOfferRepository.save(productOffer);
+//
+//        product.setProductOffer(productOffer);
+
+
         int i=0;
 
 

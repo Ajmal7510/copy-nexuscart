@@ -30,9 +30,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <header th:replace="fragments/navbar :: header-nav"></header>
 
-<button th:if="${address !=null}" type="button" class="btn btn-primary  " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    ADD ADDRESS
-</button>
+
 
 <form action="" id="checkout-form" th:action="@{/user/checkout/order-item}" method="post">
     <section class="bg-white py-5">
@@ -52,6 +50,10 @@
                             <div class=" mb-3">
 
                                 <div class="col-lg-4 mb-3">
+                                    <button th:if="${address == null}" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        ADD ADDRESS
+                                    </button>
+
 
                                     <!-- Address radio -->
                                     <div th:each="address : ${addresses}" class="form-check h-100 border rounded-3">

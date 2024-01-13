@@ -37,12 +37,11 @@ public class MainController {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
           Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
           if (roles.contains("ADMIN")) {
-
               return "redirect:admin/dashboard";
           } else if (roles.contains("USER")) {
-
               return "redirect:user/shop";
-          }  }
+          }
+      }
       if(loginerror!=null){
           model.addAttribute("loginError",loginerror);
           session.removeAttribute("loginError");
@@ -50,7 +49,7 @@ public class MainController {
       return "login";
   }
    @GetMapping("/signup")
-   public String signuppage(Model model,Principal principal){
+   public String signuppage(Model model,Principal principal, @RequestParam(name = "referralCode", required = false) String referralCodealse ){
        if(principal!=null) {
            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
@@ -61,14 +60,18 @@ public class MainController {
 
                return "redirect:user/shop";
            }  }
+       System.out.println("referralcodeis"+referralCodealse);
+
+       session.setAttribute("referralCode",referralCodealse);
         model.addAttribute("userDto",new UserDto());
         return "signup";
    }
 
 
    @PostMapping("/signup")
-   public String signup(@ModelAttribute("userSignupInfo") UserDto user, Model model){
+   public String signup(@ModelAttribute("userSignupInfo") UserDto user, Model model) {
        session.setAttribute("userDto", user);
+
        redisService.deleteOtp(user.getEmail());
       userInfoService.registerUser(user);
       model.addAttribute("email",user.getEmail());
@@ -91,6 +94,11 @@ public class MainController {
                 // Email verified successfully
                 redisService.deleteOtp(email);
                 UserDto userDto = (UserDto) session.getAttribute("userDto");
+                String referralCode= (String) session.getAttribute("referralCode");
+                System.out.println(referralCode+"its working ");
+                if(referralCode !=null){
+                    userInfoService.referral(referralCode);
+                }
                 red.addFlashAttribute("verificationStatus", "Email verification successful");
                 userInfoService.saveuser(userDto);
                 return "redirect:/login";

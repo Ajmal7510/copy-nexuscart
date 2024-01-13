@@ -28,7 +28,6 @@ public class CategoryServiceimp implements CategoryService {
     @Override
     public void SaveCategory(Categories c) {
         categoryRepository.save(c);
-
     }
 
     @Override

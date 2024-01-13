@@ -25,6 +25,7 @@ public class Coupon {
     @Column(nullable = false)
     private LocalDate expirationDate;
 
+
     private double minimumAmount;
 
     @Column(nullable = false)
@@ -39,7 +40,7 @@ public class Coupon {
         }
 
         // Check if the current date is before or equal to the expiration date
-        if (expirationDate != null && currentDate.isAfter(expirationDate)) {
+        if(expirationDate != null && currentDate.isAfter(expirationDate)) {
             return false;
         }
 

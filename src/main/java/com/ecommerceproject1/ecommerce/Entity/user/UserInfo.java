@@ -40,6 +40,8 @@ public class UserInfo {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Wallet wallet;
 
+    public String referralCode;
+
 
     @Override
     public boolean equals(Object o) {

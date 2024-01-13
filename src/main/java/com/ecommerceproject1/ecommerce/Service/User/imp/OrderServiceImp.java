@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -133,7 +134,9 @@ public class OrderServiceImp implements OrderService {
 
         model.addAttribute("wallet",wallet);
         model.addAttribute("cartProducts", cartProducts);
-        model.addAttribute("addresses", user.getUserAddresses());
+        model.addAttribute("addresses", user.getUserAddresses().stream()
+                .filter(address -> Boolean.FALSE.equals(address.getIsDelete()))
+                .collect(Collectors.toList()));
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("items",cart.getCartProducts());
 
@@ -366,9 +369,9 @@ public class OrderServiceImp implements OrderService {
             } else if (!(orders.getPayments().getPaymentMethod().equals("cod")) && !(orders.getStatus().equals("Delivered") || orders.getStatus().equals("Return"))) {
                 List<WalletHistory> walletHistories;
 
-                if (wallet == null) {
-                    wallet = new Wallet();
-                    walletHistories = new ArrayList<>();
+                    if (wallet == null) {
+                        wallet = new Wallet();
+                        walletHistories = new ArrayList<>();
                 } else {
                     walletHistories = wallet.getWalletHistory();
                 }

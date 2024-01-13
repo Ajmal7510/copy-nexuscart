@@ -56,6 +56,7 @@ public class BannerController {
         try {
             bannerService.deleteBanner(bannerId);
             return ResponseEntity.ok("Banner activated successfully");
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

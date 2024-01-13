@@ -26,10 +26,10 @@ public class SecurityConfigeration {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(
                 aouth->aouth
-
+                        .requestMatchers("/**","/login","signup","toOtp").permitAll()
                         .requestMatchers("admin/**").hasAuthority("ADMIN")
                         .requestMatchers("user/**").hasAnyAuthority("USER","ADMIN")
-                        .requestMatchers("/**","/login","signup","toOtp").permitAll()
+
                         .anyRequest().authenticated()
                          )
 

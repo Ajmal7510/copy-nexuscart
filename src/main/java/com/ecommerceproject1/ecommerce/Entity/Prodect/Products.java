@@ -1,5 +1,6 @@
 package com.ecommerceproject1.ecommerce.Entity.Prodect;
 
+import com.ecommerceproject1.ecommerce.Entity.Offers.CategoryOffer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,5 +48,15 @@ public class Products {
 
     @CreatedDate
     private LocalDateTime publishedAt;
+
+
+//    @OneToOne(mappedBy = "products", cascade = CascadeType.ALL)
+//    private ProductOffer productOffer;
+
+    private Float productDiscountAmout=0f;
+    @ManyToOne
+    @JoinColumn(name = "category_offer_id")
+    private CategoryOffer categoryOffer;
+
 
 }

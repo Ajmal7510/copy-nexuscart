@@ -115,5 +115,10 @@ public class ProfileController {
         return profileService.newAddressCkecout(email,address);
     }
 
+    @GetMapping("/view-coupon")
+    public String viewCoupon(Model model){
+        return userService.viewCoupon(model);
+    }
+
 
 }

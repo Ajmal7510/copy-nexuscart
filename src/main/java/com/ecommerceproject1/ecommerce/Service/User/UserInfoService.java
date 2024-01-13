@@ -19,4 +19,6 @@ public interface UserInfoService {
     public List<UserInfo> findByRole(String role);
    void updateUserEnabledStatus( Long userId,boolean isEnabled);
 
+   void referral(String referralCode);
+
 }

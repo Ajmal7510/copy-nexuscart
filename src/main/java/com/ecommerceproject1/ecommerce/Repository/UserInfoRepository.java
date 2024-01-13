@@ -16,5 +16,10 @@ public interface UserInfoRepository extends JpaRepository<UserInfo,Long> {
 
  List<UserInfo> findByRole(String role);
  List<UserInfo> findByRoleOrderByNameAsc(String role);
+ UserInfo findByReferralCode(String referralCode);
+
+
+
+
 
 }

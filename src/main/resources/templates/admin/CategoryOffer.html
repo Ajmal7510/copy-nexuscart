@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Category Offers</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+  <h2>Category Offers</h2>
+
+  <!-- Add Offer Button and Modal Trigger -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addOfferModal">
+    Add Offer
+  </button>
+
+  <!-- Category Offers Table -->
+  <table class="table mt-3">
+    <thead>
+    <tr>
+      <th>Category</th>
+      <th>Discount Amount</th>
+      <th>Expiration Date</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Iterate through category offers here -->
+    <tr th:each="category : ${Categories}">
+      <td th:text="${category.categoryName}"></td>
+      <td th:text="${category.discountAmount}"></td>
+      <td th:text="${offer.expirationDate}"></td>
+      <td>
+        <!-- Remove Offer Button and Modal Trigger -->
+        <button type="button" class="btn btn-danger" data-toggle="modal" th:attr="data-target='#removeOfferModal' + ${offer.id}">
+          Remove
+        </button>
+
+        <!-- Remove Offer Modal -->
+        <div class="modal fade" th:id="'removeOfferModal' + ${offer.id}" tabindex="-1" role="dialog" aria-labelledby="removeOfferModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="removeOfferModalLabel">Remove Offer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to remove the offer for category <strong th:text="${offer.category.categoryName}"></strong>?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" th:onclick="'removeOffer(' + ${offer.id} + ')'" data-dismiss="modal">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Add Offer Modal -->
+  <!-- <div class="modal fade" id="addOfferModal" tabindex="-1" role="dialog" aria-labelledby="addOfferModalLabel" aria-hidden="true"> -->
+  <!-- Add your modal content here -->
+  <!-- </div> -->
+  <!-- Add Offer Modal -->
+  <div class="modal fade" id="addOfferModal" tabindex="-1" role="dialog" aria-labelledby="addOfferModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addOfferModalLabel">Add Offer</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Add Offer Form -->
+          <form th:action="@{admin/offers/category/add-offer}" th:object="${newOffer}" method="post">
+            <div class="form-group">
+              <label for="discountAmount">Discount Amount:</label>
+              <input type="text" class="form-control" id="discountAmount" th:field="*{discountAmount}" required>
+            </div>
+            <div class="form-group">
+              <label for="expirationDate">Expiration Date:</label>
+              <input type="date" class="form-control" id="expirationDate" th:field="*{expirationDate}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Offer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<!-- Your custom script for removing offers -->
+<script th:inline="javascript">
+  function removeOffer(offerId) {
+    // Implement your logic to remove the offer via AJAX or other means
+    // You may want to perform a server-side request to update the database
+    // and then refresh the page or update the table using JavaScript
+    alert('Removing offer with ID: ' + offerId);
+  }
+</script>
+</body>
+</html>
