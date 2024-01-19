@@ -26,4 +26,5 @@ public interface ProfileService {
     boolean changePassword(String email,String oldPassword);
 
     boolean updateProfile(MultipartFile profile,String eamil);
+    void sentReferralLink(String friendEmail);
 }

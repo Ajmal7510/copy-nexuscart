@@ -9,18 +9,22 @@ import com.ecommerceproject1.ecommerce.Service.User.CartService;
 import com.ecommerceproject1.ecommerce.Service.User.OrderProductService;
 import com.ecommerceproject1.ecommerce.Service.User.OrderService;
 import com.ecommerceproject1.ecommerce.Service.User.UserService;
+import com.ecommerceproject1.ecommerce.model.product.OrderAmountDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,44 +69,42 @@ public class OrderServiceImp implements OrderService {
     private CouponRepository couponRepository;
 
 
-
-
-
     private String getCurrentIndianTime() {
         ZoneId indianZone = ZoneId.of("Asia/Kolkata");
         LocalDateTime currentTime = LocalDateTime.now(indianZone);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return currentTime.format(formatter);
     }
+
     private LocalDate getCurrentIndianDate() {
         ZoneId indianZone = ZoneId.of("Asia/Kolkata");
         return LocalDate.now(indianZone);
     }
 
     @Override
-    public String checkOut(String coupon,Model model) {
+    public String checkOut(String coupon, Model model) {
         String email = userService.currentUserName();
-        Wallet wallet=walletRepository.findByUser_Email(email);
+        Wallet wallet = walletRepository.findByUser_Email(email);
         UserInfo user = userService.userInfofindByEmail(email);
         Cart cart = cartRepository.findByUserUserId(user.getUserId());
         List<CartProduct> cartProducts = cart.getCartProducts();
 
 
         double totalAmount = cart.getTotalCartAmount();
-        double discountAmount=0.0;
+        double discountAmount = 0.0;
 
         if (coupon != null && !coupon.isEmpty()) {
             // Assuming you have a CouponService with a method to validate and apply discounts
             Coupon coupons = couponService.validateCoupon(coupon);
 
             if (coupons != null) {
-                if(coupons.getMinimumAmount()>cart.getTotalCartAmount()){
+                if (coupons.getMinimumAmount() > cart.getTotalCartAmount()) {
                     System.out.println("it working ");
 
-                    model.addAttribute("amountError","this Conpen minmumAmount"+coupons.getMinimumAmount());
+                    model.addAttribute("amountError", "this Conpen minmumAmount" + coupons.getMinimumAmount());
 
                     model.addAttribute("showinput", " ");
-                }else {
+                } else {
                     System.out.println("its working");
                     // Calculate discount based on percentage
                     double discountPercentage = coupons.getDiscountPercentage() / 100.0;
@@ -113,15 +115,15 @@ public class OrderServiceImp implements OrderService {
 
                     // You can apply more complex logic if needed
                     // Update the model with information about the applied coupon if needed
-                    model.addAttribute("successCoupon","success fully applyed Copon Code:"+coupons.getCouponCode());
+                    model.addAttribute("successCoupon", "success fully applyed Copon Code:" + coupons.getCouponCode());
                     model.addAttribute("appliedCoupon", coupon);
                 }
 
-            }else {
-                model.addAttribute("invalid","invalid coupon code");
+            } else {
+                model.addAttribute("invalid", "invalid coupon code");
                 model.addAttribute("showinput", " ");
             }
-        }else {
+        } else {
             model.addAttribute("showinput", " ");
 
         }
@@ -129,16 +131,16 @@ public class OrderServiceImp implements OrderService {
         model.addAttribute("discountAmount", discountAmount);
 
 
-        totalAmount = cart.getTotalCartAmount()-discountAmount;
+        totalAmount = cart.getTotalCartAmount() - discountAmount;
 
 
-        model.addAttribute("wallet",wallet);
+        model.addAttribute("wallet", wallet);
         model.addAttribute("cartProducts", cartProducts);
         model.addAttribute("addresses", user.getUserAddresses().stream()
                 .filter(address -> Boolean.FALSE.equals(address.getIsDelete()))
                 .collect(Collectors.toList()));
         model.addAttribute("totalAmount", totalAmount);
-        model.addAttribute("items",cart.getCartProducts());
+        model.addAttribute("items", cart.getCartProducts());
 
         return "user/checkout-page";
     }
@@ -147,7 +149,7 @@ public class OrderServiceImp implements OrderService {
     public ResponseEntity<Boolean> checkOutValidation(Model model) {
         Cart cart = cartRepository.findByUserEmail(userService.currentUserName());
         boolean isAnyProductInactive = cart.getCartProducts().stream()
-                .anyMatch(cartProduct ->  !cartProduct.getProduct().isActive() || cartProduct.getProduct().getStock() < 2);
+                .anyMatch(cartProduct -> !cartProduct.getProduct().isActive() || cartProduct.getProduct().getStock() < 2);
         return ResponseEntity.ok(isAnyProductInactive);
     }
 
@@ -210,7 +212,7 @@ public class OrderServiceImp implements OrderService {
 //    }
 
     @Override
-    public String orderitem(Long addressId, String payment,String coupon) {
+    public String orderitem(Long addressId, String payment, String coupon) {
         UserInfo user = userService.userInfofindByEmail(userService.currentUserName());
         Cart cart = user.getCart();
 
@@ -230,21 +232,20 @@ public class OrderServiceImp implements OrderService {
             orderItems.add(orderItem);
         }
 
-        double discountAmount=0;
+        double discountAmount = 0;
         if (coupon != null && !coupon.isEmpty()) {
             // Assuming you have a CouponService with a method to validate and apply discounts
             Coupon coupons = couponService.validateCoupon(coupon);
 
             if (coupons != null) {
-                if(coupons.getMinimumAmount()<cart.getTotalCartAmount()){
+                if (coupons.getMinimumAmount() < cart.getTotalCartAmount()) {
 
-                }else {
+                } else {
                     // Calculate discount based on percentage
                     double discountPercentage = coupons.getDiscountPercentage() / 100.0;
                     discountAmount = cart.getTotalCartAmount() * discountPercentage;
                     System.out.println(coupons.getDiscountPercentage());
                     System.out.println(discountPercentage);
-
 
 
                 }
@@ -255,7 +256,7 @@ public class OrderServiceImp implements OrderService {
         double subTotalAmount = cart.getTotalCartAmount();
 
 
-        double totalAmount = subTotalAmount-discountAmount;
+        double totalAmount = subTotalAmount - discountAmount;
 
         // Set additional properties for the Orders entity
         orders.setOrderProducts(orderItems);
@@ -263,20 +264,20 @@ public class OrderServiceImp implements OrderService {
 
         if (payment.equals("cod")) {
             orders.setAmountStatus("Pending");
-        }else if(payment.equals("wallet")){
-            Wallet wallet=walletRepository.findByUser_Email(user.getEmail());
-            wallet.setWalletTotalAmount(wallet.getWalletTotalAmount()-totalAmount);
-         List<WalletHistory>  walletHistories = wallet.getWalletHistory();
+        } else if (payment.equals("wallet")) {
+            Wallet wallet = walletRepository.findByUser_Email(user.getEmail());
+            wallet.setWalletTotalAmount(wallet.getWalletTotalAmount() - totalAmount);
+            List<WalletHistory> walletHistories = wallet.getWalletHistory();
 
-        WalletHistory walletHistory = new WalletHistory();
-        walletHistory.setWithdrawAmount(totalAmount);
-        walletHistory.setDepositOrWithdraw("Withdraw");
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        walletHistory.setAmountWithdrawTime(currentDateTime.format(formatter));
-        walletHistory.setWallet(wallet);
+            WalletHistory walletHistory = new WalletHistory();
+            walletHistory.setWithdrawAmount(totalAmount);
+            walletHistory.setDepositOrWithdraw("Withdraw");
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            walletHistory.setAmountWithdrawTime(currentDateTime.format(formatter));
+            walletHistory.setWallet(wallet);
 
-        walletHistories.add(walletHistory);
+            walletHistories.add(walletHistory);
             walletRepository.save(wallet);
             orders.setAmountStatus("paid");
 
@@ -306,8 +307,6 @@ public class OrderServiceImp implements OrderService {
     }
 
 
-
-
     @Override
     public String myOrders(Model model) {
         String email = userService.currentUserName();
@@ -321,8 +320,8 @@ public class OrderServiceImp implements OrderService {
         }
 
 
-            model.addAttribute("products", allProducts);
-            return "user/orders";
+        model.addAttribute("products", allProducts);
+        return "user/orders";
 
 
     }
@@ -336,10 +335,10 @@ public class OrderServiceImp implements OrderService {
 
             if ("Ordered".equals(orders.getStatus())) {
                 orderStatusPercentage = 0.0;
-            }else if("Order Placed".equals(orders.getStatus())){
-                orderStatusPercentage=25.0;
+            } else if ("Order Placed".equals(orders.getStatus())) {
+                orderStatusPercentage = 25.0;
 
-            }else if ("Shipped".equals(orders.getStatus())) {
+            } else if ("Shipped".equals(orders.getStatus())) {
                 orderStatusPercentage = 50.0;
             } else if ("Delivered".equals(orders.getStatus())) {
                 orderStatusPercentage = 100.0;
@@ -369,9 +368,9 @@ public class OrderServiceImp implements OrderService {
             } else if (!(orders.getPayments().getPaymentMethod().equals("cod")) && !(orders.getStatus().equals("Delivered") || orders.getStatus().equals("Return"))) {
                 List<WalletHistory> walletHistories;
 
-                    if (wallet == null) {
-                        wallet = new Wallet();
-                        walletHistories = new ArrayList<>();
+                if (wallet == null) {
+                    wallet = new Wallet();
+                    walletHistories = new ArrayList<>();
                 } else {
                     walletHistories = wallet.getWalletHistory();
                 }
@@ -417,34 +416,34 @@ public class OrderServiceImp implements OrderService {
 
                 orders.setStatus("Return Processing");
             }
-                List<WalletHistory> walletHistories;
+            List<WalletHistory> walletHistories;
 
-                if (wallet == null) {
-                    wallet = new Wallet();
-                    walletHistories = new ArrayList<>();
-                } else {
-                    walletHistories = wallet.getWalletHistory();
-                }
+            if (wallet == null) {
+                wallet = new Wallet();
+                walletHistories = new ArrayList<>();
+            } else {
+                walletHistories = wallet.getWalletHistory();
+            }
             orders.setStatus("Return Processing");
-                WalletHistory walletHistory = new WalletHistory();
-                walletHistory.setAddedAmount(orders.getTotalAmount());
-                walletHistory.setDepositOrWithdraw("Deposit");
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                walletHistory.setAmountAddedTime(currentDateTime.format(formatter));
-                walletHistory.setWallet(wallet);
+            WalletHistory walletHistory = new WalletHistory();
+            walletHistory.setAddedAmount(orders.getTotalAmount());
+            walletHistory.setDepositOrWithdraw("Deposit");
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            walletHistory.setAmountAddedTime(currentDateTime.format(formatter));
+            walletHistory.setWallet(wallet);
 
-                walletHistories.add(walletHistory);
+            walletHistories.add(walletHistory);
 
-                double totalAmount = walletHistories.stream().mapToDouble(WalletHistory::getAddedAmount).sum();
+            double totalAmount = walletHistories.stream().mapToDouble(WalletHistory::getAddedAmount).sum();
 
-                log.info("User TotalWalletAmount" + totalAmount); // Log the user's total wallet amount
+            log.info("User TotalWalletAmount" + totalAmount); // Log the user's total wallet amount
 
-                wallet.setWalletTotalAmount(totalAmount);
+            wallet.setWalletTotalAmount(totalAmount);
 
-                wallet.setWalletHistory(walletHistories);
+            wallet.setWalletHistory(walletHistories);
 
-                wallet.setUser(user);
+            wallet.setUser(user);
 
 
             orderRepository.save(orders);
@@ -458,7 +457,7 @@ public class OrderServiceImp implements OrderService {
     }
 
 
-    Payments payment(String paymentMethod,UserInfo user,Orders orders,double amount){
+    Payments payment(String paymentMethod, UserInfo user, Orders orders, double amount) {
         Payments payment = new Payments();
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -468,13 +467,13 @@ public class OrderServiceImp implements OrderService {
         payment.setOrders(orders);
 
 
-            if(paymentMethod.equals("online")) {
-                payment.setStatus("Paid");
-                orders.setAmountStatus("Paid");
-                payment.setPaymentTime(currentDateTime.format(formatter));
-            }
+        if (paymentMethod.equals("online")) {
+            payment.setStatus("Paid");
+            orders.setAmountStatus("Paid");
+            payment.setPaymentTime(currentDateTime.format(formatter));
+        }
 
-        if(paymentMethod.equals("wallet")) {
+        if (paymentMethod.equals("wallet")) {
             payment.setStatus("Paid");
             orders.setAmountStatus("Paid");
             payment.setPaymentTime(currentDateTime.format(formatter));
@@ -487,5 +486,58 @@ public class OrderServiceImp implements OrderService {
         return payment;
     }
 
+
+    public List<Double> getSalesAmountForLast7Days() {
+        // Calculate the start and end date for the last 7 days, starting 6 days ago
+        LocalDate today = LocalDate.now().minusDays(6);
+        System.out.println(today);
+        LocalDate startDate = today.with(DayOfWeek.SUNDAY);
+        System.out.println(startDate);
+        LocalDate endDate = LocalDate.now();
+
+        List<OrderAmountDto> orderAmounts = orderRepository.findTotalAmountsByDateRangeAndPaymentStatus(startDate, endDate);
+        System.out.println(orderAmounts);
+
+        // Create a map to store the result
+        Map<LocalDate, Double> resultMap = new HashMap<>();
+        for (OrderAmountDto orderAmount : orderAmounts) {
+            System.out.println(orderAmount);
+        }
+
+        // Fill in the map with total amounts
+        for (OrderAmountDto orderAmount : orderAmounts) {
+            LocalDate orderDate = orderAmount.getOrderDate();
+            double totalAmount = orderAmount.getTotalAmount() != null ? orderAmount.getTotalAmount() : 0.0;
+            resultMap.put(orderDate, orderAmount.getTotalAmount());
+        }
+
+        // Iterate over the date range and set total amounts to 0 for missing dates
+        LocalDate currentDate = startDate;
+        while (!currentDate.isAfter(endDate)) {
+            resultMap.putIfAbsent(currentDate, 0.0);
+            currentDate = currentDate.plusDays(1);
+        }
+
+        // Convert the map values to a list
+        List<Double> result = new ArrayList<>(resultMap.values());
+
+        System.out.println(result);
+
+
+
+            LocalDate today1 = LocalDate.now();
+            LocalDate startDate1 = today1.with(DayOfWeek.SUNDAY);
+            LocalDate endDate1 = startDate1.plusDays(6);  // One week starting with Sunday
+
+            Map<LocalDate, Double> dailyReport = new HashMap<>();
+
+            for (LocalDate date = startDate1; !date.isAfter(endDate1); date = date.plusDays(1)) {
+                double totalAmount = orderRepository.getTotalOrderAmountByDeliveredDate(date);
+                dailyReport.put(date, totalAmount);
+            }
+            System.out.println(dailyReport);
+
+        return result;
+    }
 
 }

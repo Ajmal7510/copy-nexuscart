@@ -31,4 +31,13 @@ public class EmailService {
     }
 
 
+    public void sentReferralLink(String to,String link){
+        SimpleMailMessage message=new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Referral link");
+        message.setText("The referral Link :"+link);
+        javaMailSender.send(message);
+    }
+
+
 }

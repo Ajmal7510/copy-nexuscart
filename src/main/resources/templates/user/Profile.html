@@ -280,7 +280,16 @@
                           <input type="text" class="form-control" id="referralCode" th:value="${userData.referralCode}"  readonly>
                           <button class="btn btn-primary" id="copyReferralCode">Copy Link</button>
                       </div>
+
+                      <form id="referralForm">
+                          <div class="mb-3">
+                              <label for="friendEmail" class="form-label">Friend's Email:</label>
+                              <input type="email" class="form-control" id="friendEmail" name="friendEmail" placeholder="Enter friend's email">
+                          </div>
+                          <button type="button" class="btn btn-success" onclick="sendReferral()">Send Referral</button>
+                      </form>
                   </div>
+
                   <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   </div>
@@ -321,6 +330,67 @@
         // });
     });
 </script>
+      <script>
+          function sendReferral() {
+              // Get friend's email
+              const friendEmail = document.getElementById('friendEmail').value;
+
+              // Check if a valid email is entered
+              if (!friendEmail || !isValidEmail(friendEmail)) {
+                  alert("Please enter a valid email address.");
+                  return;
+              }
+              console.log(friendEmail)
+
+              // Prepare data to be sent to the backend
+              const referralData = {
+                  friendEmail: friendEmail,
+                  // Add any other data you want to send
+              };
+
+              // Make a fetch request to your backend endpoint
+              fetch('/user/profile/sentReferralLink', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': getCsrfToken(),
+                  },
+                  body: JSON.stringify(referralData),
+              })
+                  .then(response => {
+                      if (!response.ok) {
+                          // Check if the response is plain text
+                          if (response.headers.get('content-type') && response.headers.get('content-type').toLowerCase().includes('text/plain')) {
+                              return response.text().then(errorText => {
+                                  throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+                              });
+                          } else {
+                              throw new Error(`HTTP error! Status: ${response.status}`);
+                          }
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      // Handle the response from the backend, e.g., show a success message
+                      console.log("Referral sent successfully:", data);
+                      alert("Referral sent successfully!");
+                  })
+                  .catch(error => {
+                      // Handle errors, e.g., show an error message
+                      console.error('Error sending referral:', error.message);
+                      alert(`Error sending referral: ${error.message}`);
+                  });
+          }
+
+
+          // Function to validate email format
+          function isValidEmail(email) {
+              // Use a regular expression to validate email format
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              return emailRegex.test(email);
+          }
+      </script>
+
       <script>
           document.addEventListener('DOMContentLoaded', function () {
               document.getElementById('referralOffer').addEventListener('click', function () {

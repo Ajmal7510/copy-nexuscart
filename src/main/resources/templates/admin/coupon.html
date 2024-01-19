@@ -120,7 +120,7 @@
         </div>
         <div class="modal-body">
           <!-- Add form goes here -->
-          <form th:action="@{/admin/coupon/add-coupon}" method="post">
+          <form id="addCouponForm" th:action="@{/admin/coupon/add-coupon}" method="post">
             <div class="form-group">
               <label for="addCouponName">Coupon Name</label>
               <input name="couponName" type="text" class="form-control" id="addCouponName" placeholder="Enter coupon name" required>
@@ -186,11 +186,41 @@
     });
   });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('addCouponForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const couponCode = document.getElementById('addCouponCode').value;
+
+      // Make a fetch request to check if the coupon code already 6
+      fetch(`/admin/coupon/checkCouponCode/${couponCode}`)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+
+              })
+              .then(data => {
+                if (data === true) {
+                  // Coupon code already exists, show an error message
+                  document.getElementById('couponCodeError').textContent = 'Coupon code already exists.';
+                } else {
+                  // Coupon code is valid, submit the form
+                  document.getElementById('addCouponForm').submit();
+                }
+              })
+              .catch(error => {
+                console.error('Error checking coupon code:', error);
+              });
+    });
+  });
+</script>
 
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
-
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

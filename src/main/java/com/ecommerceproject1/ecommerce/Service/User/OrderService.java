@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.util.List;
+
 @Service
 public interface OrderService {
 
@@ -19,6 +21,8 @@ public interface OrderService {
    String cancelOrder(Long orderId);
 
    String returnOrder(Long orderId);
+   public List<Double> getSalesAmountForLast7Days();
+
 
 
 }

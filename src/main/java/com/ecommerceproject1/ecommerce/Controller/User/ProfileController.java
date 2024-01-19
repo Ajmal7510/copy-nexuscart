@@ -2,7 +2,9 @@ package com.ecommerceproject1.ecommerce.Controller.User;
 import com.ecommerceproject1.ecommerce.Service.Prodect.ProductService;
 import com.ecommerceproject1.ecommerce.Service.User.ProfileService;
 import com.ecommerceproject1.ecommerce.Service.User.UserService;
+import com.ecommerceproject1.ecommerce.Service.Verification.EmailService;
 import com.ecommerceproject1.ecommerce.model.user.AddressDTO;
+import com.ecommerceproject1.ecommerce.model.user.ReferralData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,9 @@ public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private EmailService emailService;
 
 
 
@@ -119,6 +124,22 @@ public class ProfileController {
     public String viewCoupon(Model model){
         return userService.viewCoupon(model);
     }
+
+    @PostMapping("/sentReferralLink")
+    public ResponseEntity<Map<String, Object>> sendReferral(@RequestBody ReferralData referralData) {
+        try {
+            profileService.sentReferralLink(referralData.getFriendEmail());
+            System.out.println(referralData.getFriendEmail());
+            return ResponseEntity.ok(Map.of("message", "Referral sent successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error sending referral."));
+        }
+    }
+
+
+
+
 
 
 }

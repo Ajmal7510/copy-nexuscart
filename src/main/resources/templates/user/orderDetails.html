@@ -138,6 +138,7 @@
                                 <p th:text="${orders.address.mobile}" class=" mb-0"></p>
 
                             </div>
+                            <a th:href="@{/user/generate(id=${orders.orderId})}"><button class="btn-primary" style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;  cursor: pointer;  transition: background-color 0.3s;">Download Invoice</button></a>
                         </div>
                     </div>
                     <div class="card-footer border-0 px-4 py-5"

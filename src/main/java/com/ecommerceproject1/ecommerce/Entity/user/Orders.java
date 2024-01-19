@@ -60,5 +60,4 @@ public class Orders {
     @Column(name = "refundStatus")
     private boolean refundStatus = false;
 
-
 }

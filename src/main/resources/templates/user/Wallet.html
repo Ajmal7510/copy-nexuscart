@@ -92,7 +92,7 @@
     <div class="transaction-item" th:each="transation:${wallet.walletHistory}">
       <div th:if="${transation.depositOrWithdraw =='Deposit' or transation.depositOrWithdraw=='Credited For Referral'}">
         <div class="transaction-type"><span th:text="${transation.depositOrWithdraw}"> </span></div>
-        <div class="transaction-amount">₹<span th:text="${transation.addedAmount}"></span></div>
+        <div class="transaction-amount" >₹<span th:text="${transation.addedAmount}"></span></div>
         <p th:text="${transation.amountAddedTime}"></p>
       </div>
 

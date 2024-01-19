@@ -6,6 +6,8 @@ import com.ecommerceproject1.ecommerce.Exeption.ResourceNotFound;
 import com.ecommerceproject1.ecommerce.Repository.AddressRepository;
 import com.ecommerceproject1.ecommerce.Repository.UserInfoRepository;
 import com.ecommerceproject1.ecommerce.Service.User.ProfileService;
+import com.ecommerceproject1.ecommerce.Service.User.UserService;
+import com.ecommerceproject1.ecommerce.Service.Verification.EmailService;
 import com.ecommerceproject1.ecommerce.model.user.AddressDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,12 @@ public class ProfileServiceImp implements ProfileService {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
 
     @Override
@@ -170,6 +178,17 @@ public class ProfileServiceImp implements ProfileService {
         }
 
         return false;
+    }
+
+    @Override
+    public void sentReferralLink(String friendEmail) {
+        String username=userService.currentUserName();
+        UserInfo user=userService.userInfofindByEmail(username);
+
+        String referralLink="http://localhost:8080/login?"+user.getReferralCode();
+
+        emailService.sentReferralLink(friendEmail,referralLink);
+
     }
 
 

@@ -15,10 +15,7 @@ public class AdminController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @GetMapping("/dashboard")
-    public String dashboardpage(){
-        return "admin/dashboard";
-    }
+
 
     @GetMapping("/userlist")
     public String home(Model model){
