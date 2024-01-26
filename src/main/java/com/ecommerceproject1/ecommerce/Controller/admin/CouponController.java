@@ -43,6 +43,15 @@ public class CouponController {
         return couponService.deleteCoupon(id,red);
 
     }
+    @GetMapping("/checkCouponCode/{couponCode}")
+    @ResponseBody
+    public boolean checkCouponCode(@PathVariable String couponCode) {
+
+        boolean t=couponService.findcoupon(couponCode);
+        System.out.println(t);
+
+        return true;
+    }
 
 
 }

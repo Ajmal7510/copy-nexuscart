@@ -88,4 +88,13 @@ public class CouponServiceImp implements CouponService {
         return null;
     }
 
+    @Override
+    public boolean findcoupon(String couponCode) {
+        Coupon coupon = couponRepository.findByCouponCode(couponCode);
+        System.out.println("Coupon: " + coupon);
+        boolean t = coupon != null;
+        System.out.println("Result: " + t);
+        return t;
+    }
+
 }

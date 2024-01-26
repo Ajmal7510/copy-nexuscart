@@ -39,7 +39,7 @@ public class InvoiceServiceImp implements InvoiceService {
                 contentStream.beginText();
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
                 contentStream.newLineAtOffset(250, 700);
-                contentStream.showText("Hibeat");
+                contentStream.showText("NexusCart");
                 contentStream.endText();
 
                 // Billing Address

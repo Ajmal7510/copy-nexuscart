@@ -15,5 +15,7 @@ public interface CouponService {
     String deleteCoupon(Long couponId,RedirectAttributes red);
     Coupon validateCoupon(String couponCode);
 
+    boolean findcoupon(String couponCode);
+
 
 }
