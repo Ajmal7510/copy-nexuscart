@@ -28,7 +28,10 @@ public class BannerServiceImp implements BannerService {
            int i=0;
            Banner banner=new Banner();
            System.out.println("working part2");
-           String UPLOAD_DIR="C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\banner\\";
+           // String UPLOAD_DIR="C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\banner\\";
+
+        String UPLOAD_DIR = "/home/ubuntu/ecommerce/src/main/resources/static/banner/";
+
 
            for(MultipartFile img:images){
                String UUI = UUID.randomUUID().toString();
