@@ -69,8 +69,11 @@ public class ProductController {
             return "redirect:admin/addproduct";
         }
 
+        // // Save the product images to the static path
+        // String UPLOAD_DIR="C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\uploads\\";
         // Save the product images to the static path
-        String UPLOAD_DIR="C:\\Project 1\\ecommerce\\src\\main\\resources\\static\\uploads\\";
+String UPLOAD_DIR = "/home/ubuntu/ecommerce/src/main/resources/static/uploads/";
+
         MultipartFile[] files = productDTO.getProductImages();
 //        String[] images = productDTO.getImages_path();
         // Create a Products entity from the DTO
