@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+
+    <!--font awsom-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!--google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+    <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />-->
+</head>
+
+<body>
+<header>
+    <!-- place navbar here -->
+</header>
+<main>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.6.0/js/dataTables.searchBuilder.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <style>
+        .product-text-container {
+            border-radius: 12px;
+            width: 100%;
+            height: 56px;
+            margin-top: 73px;
+            box-shadow: 0px 0px 7px -3px;
+
+        }
+
+
+        .dropdown-menu {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-menu a {
+            color: #343a40;
+        }
+
+        .dropdown-menu a:hover {
+            background-color:grey;
+            color: #fff;
+        }
+        table#orderTable {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table#orderTable th, table#orderTable td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+
+
+        .form-outline {
+            display: flex;
+            align-items: center;
+        }
+
+        input.form-control {
+            width: 200px;
+            margin-right: 10px;
+        }
+
+
+    </style>
+
+
+
+<!--    <div th:replace="Fragments/sidebarFragment :: sidebar-fragment">-->
+<!--        -->
+<!--    </div>-->
+
+    <div class="p-4 sm:ml-64">
+        <div class="p-4 rounded-lg dark:border-gray-700">
+
+    <div class="product-text-container container-fluid mb-4" style="display: flex; justify-content: space-between;">
+        <h4 style=" margin-top: 11px;" id="ManageProduct-text">ORDER MANAGEMENT</h4>
+    </div>
+    <table id="orderTable" class="table table-responsive mt-5 table-hover table-bordered">
+        <thead class="table-dark">
+        <tr class="text-center">
+            <th>No</th>
+            <th>BuyerName</th>
+            <th>Purchased On</th>
+            <th>OrderId</th>
+            <th>User Id</th>
+            <th>Payment Method</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Order Status</th>
+
+            <th>View</th>
+        </tr>
+        </thead>
+        <tbody id="orderTableBody">
+
+
+        <tr th:each="order,stat: ${orders}" class="text-start">
+            <!-- ... (Your existing table row code) ... -->
+            <td>
+                <strong>   <span th:text="${stat.index + 1}"></span> </strong>
+            </td>
+            <td>
+                <strong style="white-space: nowrap;">  <span th:text="${order.address.name}"></span> </strong>
+            </td>
+            <td>
+                <strong style="white-space: nowrap;"> <span th:text="${order.orderDate}"></span> </strong>
+            </td>
+            <td>
+
+                <strong> <span th:text="${order.orderId}"></span> </strong>
+
+            </td>
+            <td>
+
+                <strong> <span th:text="${order.user.userId}"></span> </strong> <br />
+
+            </td>
+            <td>
+
+                <strong> <span th:text="${order.payments.paymentMethod}"></span> </strong>
+
+            </td>
+            <td>
+
+                <strong> <span th:text="${order.totalAmount}"></span></strong> <br />
+
+            </td>
+            <td class="<% if (order.status === 'Pending') { %> text-warning  <% }  else if (order.status === 'Order Placed') { %> text-primary <% } else if (order.status === 'Shipped') { %> text-secondary <% } else if (order.status === 'Order Delivered') { %> text-success <% } else if (order.status === 'Returned') { %> text-warning <% } else if (order.status === 'Cancelled') { %> text-danger <% } %>"  style="white-space: nowrap;" >
+
+                <strong>
+                    <th:block th:switch="${order.status}">
+                        <th:block th:case="'Order Placed'">
+                            <i class="fas fa-shopping-basket"></i> Order Placed
+                        </th:block>
+                        <th:block th:case="'Shipped'">
+                            <i class="fa-solid fa-truck"></i> Shipped
+                        </th:block>
+                        <th:block th:case="'Order Delivered'">
+                            <i class="fas fa-check-circle"></i> Order Delivered
+                        </th:block>
+                        <th:block th:case="'Pending'">
+                            <i class="fa-solid fa-spinner"></i> Pending
+                        </th:block>
+                        <th:block th:case="*">
+                            <span th:text="${order.status}"></span>
+                        </th:block>
+                    </th:block>
+                </strong>
+            </td>
+            <td>
+                <p th:if="${order.status eq 'Cancelled'}" class="text-danger" style="font-weight: bold;">Cancelled By User</p>
+                <div th:if="${order.status  !='Cancelled'}" class="dropdown">
+
+                    <button id="orderStatus" class="btn btn-primary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            th:value="${order.orderId}"
+                            th:disabled="${order.status == 'Order Delivered' or order.status == 'Delivered' or order.status =='Returned'}"
+                            th:data-order-id="${order.orderId}" >
+                        Change Order Status
+                    </button>
+
+                    <ul class="dropdown-menu">
+
+                        <th:block th:switch="${order.status}">
+
+                     <th:block th:case="'Processing'">
+                         <li><a class="dropdown-item" href="" onclick="updateOrderStatus(this.parentElement.parentElement.previousElementSibling, 'Order Placed')">Order Placed</a></li>                     </th:block>
+                     <th:block th:case="'Order Placed'">
+                   <li><a class="dropdown-item" href="" onclick="updateOrderStatus(this.parentElement.parentElement.previousElementSibling, 'Shipped')">Shipped</a></li>
+                   </th:block>
+                    <th:block th:case="'Shipped'">
+                <li>
+                    <a class="dropdown-item" href="" onclick="updateOrderStatus(this.parentElement.parentElement.previousElementSibling, 'Delivered')">Order Delivered</a>
+                </li>
+                    </th:block>
+
+                            <th:block th:case="'Return Processing'">
+                                <li>
+                                    <a class="dropdown-item" href="" onclick="updateOrderStatus(this.parentElement.parentElement.previousElementSibling, 'Returned')">Approve Return</a>
+                                </li>
+                            </th:block>
+
+                         </th:block>
+                    </ul>
+
+
+
+
+                </div>
+
+            </td>
+            <td>
+
+                <a th:href="@{/admin/orders/Details/{orderId}(orderId=${order.orderId})}" class="btn btn-success">View</a>
+
+
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+            <a th:href="@{/admin/dashboard}"><button type="button" class="btn btn-primary">Dashboard</button ></a>
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#orderTable')
+                .DataTable();
+        });
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.6.0/css/searchBuilder.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
+
+    <script>
+
+
+        function updateOrderStatus(button, newStatus) {
+            const orderId = button.dataset.orderId;
+
+            console.log(orderId)
+            const formData = new FormData();
+            formData.append("orderId", orderId);
+            formData.append("newStatus", newStatus);
+
+            fetch(`/admin/orders/change-Orderstatus`,{
+                method: 'put',
+                headers: {
+                    'X-CSRF-TOKEN': getCsrfToken(),
+                },
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        setTimeout(1000)
+                        window.location.reload();
+                    } else {
+                        alert('Failed to update order status: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+
+            function getCsrfToken() {
+                return document.querySelector('meta[name="_csrf"]').content;
+            }
+
+    </script>
+
+
+</main>
+<footer>
+    <!-- place footer here -->
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+<!-- Bootstrap JavaScript Libraries -->
+
+
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- css -->
+    <link rel="stylesheet" th:href="@{/user/home/assets/style.css}" type="text/css">
+
+    <!-- Asom font -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+</head>
+<body>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<header th:replace="fragments/navbar :: header-nav"></header>
+
+
+
+<form action="" id="checkout-form" th:action="@{/user/checkout/order-item}" method="post">
+    <section class="bg-white py-5">
+
+
+        <div class="container">
+            <h4 class="card-title mb-4">Checkout
+                <i class="fa-regular fa-money-bill-1  text-dark ms-2 fs-4" style="color: #000000;"></i>
+            </h4>
+            <div class="row">
+
+                <div class="col-xl-8 col-lg-8">
+                    <!-- Checkout -->
+                    <div class="card shadow-0 border">
+                        <div class="p-4">
+                            <h5 class="card-title mb-3">Select Address</h5>
+                            <div class=" mb-3">
+
+                                <div class="col-lg-4 mb-3">
+                                    <button th:if="${address == null}" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        ADD ADDRESS
+                                    </button>
+
+
+                                    <!-- Address radio -->
+
+                                    <div th:each="address : ${addresses}" class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input required class="form-check-input" type="radio"
+                                                   name="address" id="flexRadioDefault"
+                                                   th:value="${address.id}" />
+                                            <label class="form-check-label" for="flexRadioDefault">
+                                                Address No: <strong></strong><br /><br>
+
+                                                <small class="text-muted" style="font-weight: bold;">
+                                                    <span th:text="'Name: '+${address.name}" style="font-weight: bolder; color: black;"> </span>
+                                                </small><br>
+                                                <small class="text-muted" style="font-weight: bold;">
+                                                    <span th:text="'City: ' + ${address.city}"  style="font-weight: bolder; color: black;">   </span>
+                                                </small><br>
+                                                <small class="text-muted" style="font-weight: bold;">
+                                                    <span th:text="'Address: '+${address.address}" style="font-weight: bolder; color: black;">     </span>
+                                                </small><br>
+                                                <small class="text-muted" style="font-weight: bold;">
+                                                    <span th:text="'State:'+${address.state}" style="font-weight: bolder; color: black;">    </span>
+                                                </small><br>
+                                                <small class="text-muted" style="font-weight: bold; ">
+                                                    <span th:text="'Mobile: '+${address.mobile}" style="font-weight: bolder; color: black;">  </span>
+                                                </small>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <hr>
+                            <h5 class="card-title mb-3">Choose PaymentMethod</h5>
+                            <div class="row mb-3">
+
+
+                                <div class="col-lg-4 mb-3">
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input required class="form-check-input" type="radio"
+                                                   name="payment" id="flexRadioDefault3"
+
+                                                   value="cod" />
+
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                <strong>
+                                                    COD
+                                                </strong> <br />
+                                                <small class="text-muted">Payment: Cash on delivery
+                                                </small><br>
+                                                <small class="text-muted">Type: Hand to hand</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input required class="form-check-input" type="radio"
+                                                   name="payment" id="flexRadioDefault4"
+
+                                                   value="online" />
+
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                <strong>
+                                                    Online-Payment
+                                                </strong> <br />
+                                                <small class="text-muted">Payment: ONLINE
+                                                </small><br>
+                                                <small class="text-muted">Type: pay to online</small>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input required class="form-check-input" type="radio"
+                                                   name="payment" id="flexRadioDefault3"
+                                                   th:disabled="${totalAmount > wallet.walletTotalAmount}"
+                                                   value="wallet" />
+
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                <strong>
+                                                    Wallet
+                                                </strong> <br />
+                                                <small class="text-muted">Payment: Wallet
+                                                </small><br>
+                                                <small class="text-muted">Balance:<span th:text="${wallet.walletTotalAmount}"></span>
+                                                </small><br>
+                                                <small class="text-muted">Type: wallet to Pay</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <hr>
+                            <h5 class="card-title mb-3">Choose Shipping Type</h5>
+                            <div class="row mb-3">
+
+                                <div class="col-lg-4 mb-3">
+                                    <div class="form-check h-100 border rounded-3">
+                                        <div class="p-3">
+                                            <input class="form-check-input" type="radio" name="shipping"
+                                                   required id="flexRadioDefault3"
+                                                   value="  Specmen" />
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                <strong>
+                                                    STANDERD
+                                                </strong><br />
+                                                <small class="text-muted">Partner:
+                                                </small><br>
+                                                <small class="text-muted">Type: Standerd
+                                                </small><br>
+                                                <small class="text-muted">Shipping Charge: Free
+                                                </small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="float-end">
+                                <a href="/user/user-cart"><p class="btn btn-light border" style="margin-top: 15px;">Cancel </p></a>
+<!--                                <button class="btn btn-success shadow-0 border" type="submit">Place Order</button>-->
+
+                                <button class="btn btn-success shadow-0 border" type="button" onclick="handlePayment()">Place Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div
+                        class="col-xl-4 col-lg-4 d-flex justify-content-center justify-content-lg-end border card shadow-0 mb-5">
+                    <div class="container py-5">
+
+
+
+                        <div class="ms-lg-4 mt-4 mt-lg-0">
+                            <div class="mt-0 mt-md-4 mb-4"
+                                 style="font-size : 20px; margin-left: 1%; ">
+                                <h5  class="text-dark fw-bold">Order Summary</h5>
+                                <span class="fw-semibold" th:text="${items.size()}"></span> Items in cart
+                            </div>
+                            <hr>
+                            <h6 class="mb-3"></h6>
+                            <div class="d-flex align-items-center mb-4" th:each="item : ${items}">
+                                <div class="me-3 position-relative">
+                                    <img class="img-sm rounded border" style="height: 60px; width: 60px;"
+                                         th:src="@{'/uploads/' + ${item.product.getImagesPath[0]}}" />
+                                </div>
+                                <div class="">
+                                    <a class="nav-link fw-semibold" href="#"
+                                       th:text="${item.getProduct().getProductName()}">
+                                    </a>
+                                    <div class="">Qty : <span th:text="${item.getQuantity()}"></span></div>
+                                    <div class="">
+                                        Total Price : ₹
+                                        <span class="price"
+                                              th:text="${item.getProduct().getPrice()} * ${item.getQuantity()}">
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <p class="mb-2">Subtotal price:</p>
+                                <p class="mb-2">₹ <span th:text="${totalAmount}"></span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="mb-2">Discount:</p>
+                                <p class="mb-2 fw-semibold text-danger">- ₹ <span th:text="${discountAmount}"></span></p>
+                            </div>
+                            <hr />
+                            <div class="d-flex justify-content-between">
+                                <p class="mb-2 fw-bold">Total price:</p>
+                                <p class="mb-2 fw-bold">₹ <span id="amount"
+                                                                th:text="${totalAmount}"></span></p>
+                                <input type="hidden" id="razorpay_amount" name="amount"  th:value="${totalAmount}"/>
+
+
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="mb-5">
+                            <p style="color: green" th:text="${successCoupon}"></p>
+                            <p style="color: red" th:text="${amountError}"></p>
+                            <p style="color: red" th:text="${invalid}"></p>
+
+                            <div  th:if="${showinput}" class="form-outline">
+                                <label class="form-label" for="form3Examplea2">Enter coupon code</label>
+                                <input type="text" id="couponinp" class="form-control form-control-lg" />
+
+                                <button class="btn btn-success shadow-0 border" type="button" onclick="applyCoupon()">Apply Coupon</button>
+                            </div>
+                            <div th:if="${appliedCoupon}" class="form-outline">
+                                <label class="form-label" for="form3Examplea2">Enter coupon code</label>
+                                <input name="coupon" th:value="${appliedCoupon}" type="text" id="coupo"   class="form-control form-control-lg" disabled />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</form>
+
+
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg  ">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 " id="staticBackdropLabel">ADD ADDRESS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="container  mt-5 mb-5 ">
+                <div class="row mx-0 justify-content-center">
+                    <div class="col-md-6 col-lg-6">
+                        <form
+                                method="POST"
+                                class="w-100 rounded-1 p-4 border bg-white"
+                                th:action="@{/user/profile/newAddress}"
+                        >
+                            <input type="hidden" id="razorpay_order_id" name="razorpay_order_id" />
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Name</span>
+                                <input
+                                        name="name"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="enter your name" required
+                                />
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Address line </span>
+                                <input
+                                        name="address"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Address(Area and Street) " required
+                                />
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">City</span>
+                                <input name="city" type="text" class="form-control" placeholder="City/District/Town" required/>
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">State/Province</span>
+                                <input name="state" type="text" class="form-control" placeholder="State" required/>
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Zip/Postal code</span>
+                                <input name="pin" type="text" class="form-control" placeholder="Pincode" required/>
+                            </label>
+
+                            <label class="d-block mb-4">
+                                <span class="form-label d-block">Phone</span>
+                                <input
+                                        name="mobile"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="10-digit mobile number" required
+                                />
+                            </label>
+
+                            <div class="mb-3  ">
+                                <button type="submit" class="btn btn-primary px-4 rounded-3">
+                                    Save
+                                </button>
+                                <button type="button" class="btn btn-danger px-4 rounded-3" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"
+></script>
+
+<script th:inline="javascript">
+
+    function applyCoupon() {
+        var couponCode = document.getElementById("couponinp").value;
+        var redirectUrl = '/user/checkout?couponCode=' + encodeURIComponent(couponCode);
+
+        // Redirect to the checkout URL with the coupon code
+        window.location.href = redirectUrl;
+    }
+
+    function handlePayment() {
+        var selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+        var totalAmount = document.getElementById("razorpay_amount").value;
+
+        if (selectedPayment === "online") {
+            // Handle Razorpay payment
+            var options = {
+                key: "rzp_test_JdTHyVvjuNu7TX", // Replace with your actual Razorpay API key
+                amount: totalAmount *100,
+                name: 'Your Company Name',
+                description: 'Payment for Order #123',
+                handler: razorpayPaymentHandler,  // Call this function on successful payment
+                prefill: {
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    contact: '1234567890'
+                },
+                theme: {
+                    color: '#F37254'
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            // For cash on delivery, submit the form directly
+            document.getElementById("checkout-form").submit();
+        }
+    }
+
+    // Callback function from Razorpay response
+    function razorpayPaymentHandler(response) {
+        console.log(response);
+        if (response.razorpay_payment_id) {
+            // Payment successful, update the hidden form field with Razorpay order ID
+            document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+            // Submit the form to your server for processing
+            document.getElementById("checkout-form").submit();
+        } else {
+            // Payment failed, handle accordingly (e.g., show an error message)
+            alert('Payment failed. Please try again.');
+        }
+    }
+</script>
+</body>
+</html>
