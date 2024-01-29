@@ -182,7 +182,9 @@ String UPLOAD_DIR = "/home/ubuntu/ecommerce/src/main/resources/static/uploads/";
             String imagepath = imageFiles[0].getOriginalFilename();
             System.out.println("hi" + imagepath);
         }
-        String UPLOAD_DIR = "C:" + File.separator + "Project 1" + File.separator + "ecommerce" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
+        // String UPLOAD_DIR = "C:" + File.separator + "Project 1" + File.separator + "ecommerce" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
+
+        String UPLOAD_DIR = "/home/ubuntu/ecommerce/src/main/resources/static/uploads/";
 
 
 
