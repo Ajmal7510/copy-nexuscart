@@ -86,7 +86,7 @@
                    onchange="previewImage('imageFile1','img1','image-section-1','delete-button-1')" required type="file"/>
             <div class="d-flex flex-column">
               <div>
-                <img class="product-image" id="img1" th:src="@{'/uploads/' + ${product.imagesPath[0]}}" >
+                <img class="product-image" id="img1" th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/' + ${product.imagesPath[0]}}" >
               </div>
               <div class="mt-2">
                 <a class="btn btn-danger delete-button" id="delete-button-1" onclick="deleteImage('imageFile1', 'img1', 'image-section-1','delete-button-1')" style="height:20px;" >
