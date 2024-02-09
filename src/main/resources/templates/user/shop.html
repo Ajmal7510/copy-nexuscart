@@ -69,7 +69,7 @@
                 <div th:each="product, iterStat : ${product}" class="col hp">
                     <div  class="card h-100 shadow-sm">
                         <a href="#">
-                            <img style="object-fit: cover" width="100%" height="300px"  th:src="@{'/uploads/'+${product.imagesPath[0]}}" class="card-img-top " alt="product.title" />
+                            <img style="object-fit: cover" width="100%" height="300px"  th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/'+${product.imagesPath[0]}}" class="card-img-top " alt="product.title" />
                         </a>
 
                         <div class="label-top shadow-sm">
