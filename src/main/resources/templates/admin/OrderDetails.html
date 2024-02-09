@@ -64,7 +64,7 @@
                       <% orderData[0].items.forEach((x) => { %> -->
                   <div  th:each="product :${order.orderProducts}" class="row" style="font-family: 'Times New Roman', Times, serif;">
                     <div class="col-md-2">
-                      <img  th:src="@{'/uploads/'+${product.product.imagesPath[0]}}"
+                      <img  th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/'+${product.product.imagesPath[0]}}"
                            class="img-fluid" alt="Phone">
                     </div>
                     <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
