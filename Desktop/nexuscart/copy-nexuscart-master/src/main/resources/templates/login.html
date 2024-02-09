@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== REMIXICONS ===============-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" th:href="@{login-signup/assets/css/styles.css}">
+
+    <title>Login</title>
+</head>
+<body>
+<div  class="login" style="background: linear-gradient(to right top, #7aaab2, #67a7b0, #52a5ad, #38a2a9, #009fa4);height: 100vh">
+
+    <form th:action="@{/login}" class="login__form" method="post">
+
+        <div th:if="${verificationStatus}">
+            <p style="color: white" >
+                Successfuly register user
+            </p>
+        </div>
+        <div th:if="${loginError}">
+            <p th:text="${loginError}" style="color: red" >
+
+            </p>
+        </div>
+        <div th:if="${UserBlocked}">
+            <p th:text="${UserBlocked}" style="color: red" >
+
+            </p>
+        </div>
+
+        <h1 class="login__title">Login</h1>
+        <div class="login__inputs">
+            <div class="login__box">
+                <input type="email" name="username" placeholder="Email ID" required class="login__input">
+                <i class="ri-mail-fill"></i>
+            </div>
+
+            <div class="login__box">
+                <input type="password"  name="password" placeholder="Password" required class="login__input">
+                <i class="ri-lock-2-fill"></i>
+            </div>
+        </div>
+
+        <div class="login__check">
+            <div class="login__check-box">
+                <input type="checkbox" name="remember-me" class="login__check-input" id="user-check">
+                <label for="user-check" class="login__check-label">Remember me</label>
+            </div>
+
+            <a href="#" class="login__forgot">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="login__button">Login</button>
+        <p style="margin-left: 47% ; font-size: 20px;">or</p>
+        <br>
+
+        <div style="display: flex; justify-content: center; ">
+            <a style="color: white;" th:href="@{/login/aouth2/code/google}" class="aoth2_google" ><img th:src="@{login-signup/assets/img/icons8-google.svg}"  alt=""><span>google</span></a>
+        </div>
+        <br>
+
+
+        <div class="login__register">
+            Don't have an account? <a href="/signup">Register</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

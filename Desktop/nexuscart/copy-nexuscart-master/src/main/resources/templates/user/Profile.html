@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+  <!-- css -->
+  <link rel="stylesheet" th:href="@{/user/home/assets/style.css}" type="text/css">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+
+
+
+
+    <!-- Asom font -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+<style>
+  body{
+    background-color: #e2e8f0;
+  }
+
+  .card {
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+  }
+</style>
+
+<header th:replace="fragments/navbar :: header-nav"></header>
+
+<div class="container ">
+  <div class="main-body ">
+
+    
+
+    <div class="row mt-5">
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+              <img th:src="@{'/profile/'+${userData.profilePhoto}}" alt="Profile Pic"
+                   class="rounded-circle" style="width: 200px;height: 200px; object-fit: cover;">
+                <p th:text="${userData.profilePhoto}"></p>
+                <div class="d-flex justify-content-center mt-3">
+                    <label for="imageInput" class="btn btn-primary btn-rounded">
+                        Choose File
+                        <input type="file" id="imageInput" name="profileimage" accept="image/*" style="display: none;" onchange="uploadprofiepic(event)">
+                    </label>
+                </div>
+
+                <div class="mt-3">
+                <h4 th:text="${userData.name}" ></h4>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Full Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+<!--                <%= userData.username %>-->
+                  <span th:text="${userData.name}"></span>
+                <!-- Button trigger modal for changing username--------------- -->
+
+                <a href="" class="text-white float-end" data-bs-toggle="modal"
+                   data-bs-target="#staticBackdrop">
+                  <i class="fa-solid fa-pen-to-square fa-xl" style="color: #000000;"></i>
+                              </a>
+                <!---------------------------------Modal for changingg username------------------------------------------->
+                <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered ">
+                    <div class="modal-content ">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title " id="staticBackdropLabel">Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <form id="nameForm" method="post" th:action="@{/user/profile/updateName}">
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" th:value="${userData.name}"
+                                   placeholder="Enter your name">
+                          </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+<!--                <%= userData.email %>-->
+                  <span th:text="${userData.email}"></span>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+<!--              <% if(userData.address &&userData.address.length>0){ %>-->
+              <div class="col-sm-3">
+                <h6 class="mb-0">Mobile</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+              <span th:text="${userData.phoneNumber}"></span>
+              </div>
+
+              <hr>
+
+
+                    <div class="col-sm-3">
+                        <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        <div th:if="${not #lists.isEmpty(userData.userAddresses)}">
+                            <!-- Check if the user has addresses -->
+                            <div th:each="address : ${userData.userAddresses}" th:if="${address.isDelete==false}">
+                                <p th:text="${address.getFullAddress()}"></p>
+                            </div>
+                        </div>
+                        <div th:unless="${not #lists.isEmpty(userData.userAddresses)}">
+                            <!-- Display a message when user has no addresses -->
+                            <p>No addresses available</p>
+                        </div>
+                    </div>
+
+
+<!--              <% } %>-->
+            </div>
+            <hr>
+            <div class="row">
+              <!------------------------------------------change password modal --------------------------------------------------------------------->
+              <button type="button" class="btn btn-outline-primary mb-2 w-25" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Change Password</button>
+
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModal">Change Password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="password-form" >
+                      <div class="mb-3">
+                        <label for="old-password" class="col-form-label">Old Password:</label>
+                        <input type="password" name="oldPassword" class="form-control" id="oldPassword">
+                      </div>
+                      <div class="mb-3">
+                        <label for="new-password" class="col-form-label">New Password:</label>
+                        <input type="password" name="password" class="form-control" id="newPassword">
+                      </div>
+                      <div class="mb-3">
+                        <label for="confirm-password" class="col-form-label">Confirm Password:</label>
+                        <input  type="password" class="form-control" id="confirmPassword">
+                      </div>
+                      <div id="passwordWarning" style="color: red;"></div>
+
+                    </form>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                  </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+
+
+      .list-group-item {
+        cursor: pointer ;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .list-group-item:hover {
+        background-color: #f8f9fa;
+        color: red;
+      }
+    </style>
+   <div class="card col-md-4 mb-5">
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush rounded-3">
+            <li id="myOrders" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">My Orders</h6>
+                <i class="fa-solid fa-box-open text-primary"></i>
+            </li>
+            <li id="cart" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">Cart</h6>
+                <i class="fa-solid fa-cart-shopping"></i>
+            </li>
+            <li id="wishlist" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">Wishlist</h6>
+                <i class="fa-solid fa-heart text-danger"></i>
+            </li>
+            <li id="manageAddress" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">Manage Address</h6>
+                <i class="fa-solid fa-address-book"></i>
+            </li>
+            <li id="applyCoupon" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">Apply Coupon</h6>
+                <i class="fa-solid fa-percent text-success"></i>
+            </li>
+
+            <li id="referralOffer" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">Referral Offer</h6>
+                <i class="fa-solid fa-user-plus text-info"></i>
+            </li>
+
+            <!-- Add your modal or link to the referral program page here -->
+
+            <!-- Add your modal for applying the coupon here -->
+
+
+            <li id="logout" class="list-group-item d-flex justify-content-between align-items-center p-3">
+                <h6 class="mb-0">Logout</h6>
+                <i class="fa-solid fa-arrow-right-from-bracket text-danger"></i>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+      <div class="modal fade" id="referralOfferModal" tabindex="-1" aria-labelledby="referralOfferModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="referralOfferModalLabel">Referral Offer</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body text-center">
+                      <p class="mb-4">Refer a friend and get ₹100 in your account when they make their first purchase!</p>
+                      <div class="input-group mb-3">
+                          <span class="input-group-text" >Referral code</span>
+                          <input type="text" class="form-control" id="referralCode" th:value="${userData.referralCode}"  readonly>
+                          <button class="btn btn-primary" id="copyReferralCode">Copy Link</button>
+                      </div>
+
+                      <form id="referralForm">
+                          <div class="mb-3">
+                              <label for="friendEmail" class="form-label">Friend's Email:</label>
+                              <input type="email" class="form-control" id="friendEmail" name="friendEmail" placeholder="Enter friend's email">
+                          </div>
+                          <button type="button" class="btn btn-success" onclick="sendReferral()">Send Referral</button>
+                      </form>
+                  </div>
+
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('myOrders').addEventListener('click', function () {
+            window.location.href = '/user/orders';
+        });
+
+        document.getElementById('cart').addEventListener('click', function () {
+            window.location.href = '/user-cart';
+        });
+
+        document.getElementById('wishlist').addEventListener('click', function () {
+            window.location.href = '/user-wish';
+        });
+
+        document.getElementById('manageAddress').addEventListener('click', function () {
+            window.location.href = '/user/profile/manage-address';
+        });
+
+        document.getElementById('logout').addEventListener('click', function () {
+            window.location.href = 'z/logout';
+        });
+
+        document.getElementById('applyCoupon').addEventListener('click', function () {
+            // Add logic to open the coupon modal or navigate to the coupon page
+            window.location.href = '/user/profile/view-coupon';
+        });
+
+        // document.getElementById('referralOffer').addEventListener('click', function () {
+        //     // Add logic to open the referral offer modal or navigate to the referral program page
+        //     window.location.href = '/user/profile/referral-offer';
+        // });
+    });
+</script>
+      <script>
+          function sendReferral() {
+              // Get friend's email
+              const friendEmail = document.getElementById('friendEmail').value;
+
+              // Check if a valid email is entered
+              if (!friendEmail || !isValidEmail(friendEmail)) {
+                  alert("Please enter a valid email address.");
+                  return;
+              }
+              console.log(friendEmail)
+
+              // Prepare data to be sent to the backend
+              const referralData = {
+                  friendEmail: friendEmail,
+                  // Add any other data you want to send
+              };
+
+              // Make a fetch request to your backend endpoint
+              fetch('/user/profile/sentReferralLink', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': getCsrfToken(),
+                  },
+                  body: JSON.stringify(referralData),
+              })
+                  .then(response => {
+                      if (!response.ok) {
+                          // Check if the response is plain text
+                          if (response.headers.get('content-type') && response.headers.get('content-type').toLowerCase().includes('text/plain')) {
+                              return response.text().then(errorText => {
+                                  throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+                              });
+                          } else {
+                              throw new Error(`HTTP error! Status: ${response.status}`);
+                          }
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      // Handle the response from the backend, e.g., show a success message
+                      console.log("Referral sent successfully:", data);
+                      alert("Referral sent successfully!");
+                  })
+                  .catch(error => {
+                      // Handle errors, e.g., show an error message
+                      console.error('Error sending referral:', error.message);
+                      alert(`Error sending referral: ${error.message}`);
+                  });
+          }
+
+
+          // Function to validate email format
+          function isValidEmail(email) {
+              // Use a regular expression to validate email format
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              return emailRegex.test(email);
+          }
+      </script>
+
+      <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              document.getElementById('referralOffer').addEventListener('click', function () {
+                  // Show the referral offer modal
+                  $('#referralOfferModal').modal('show');
+              });
+
+              // Initialize Clipboard.js for copying the referral code
+          //     var clipboard = new ClipboardJS('#copyReferralCode', {
+          //         text: function () {
+          //             return document.getElementById('referralCode').value;
+          //         }
+          //     });
+          //
+          //     clipboard.on('success', function (e) {
+          //         alert('Referral code copied to clipboard!');
+          //         e.clearSelection();
+          //     });
+          //
+          //     clipboard.on('error', function (e) {
+          //         alert('Failed to copy referral code. You can manually copy it.');
+          //     });
+
+          });
+      </script>
+
+
+  </div>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('copyReferralCode').addEventListener('click', function () {
+            const referralCode = document.getElementById('referralCode').value;
+            const referralLink = `${window.location.origin}/signup?referralCode=${referralCode}`;
+
+            navigator.clipboard.writeText(referralLink).then(function () {
+                const toast = Swal.fire({
+                    icon: 'success',
+                    title: 'Referral link copied!',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }).catch(function (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to copy referral link. You can manually copy it.',
+                });
+                console.error('Clipboard copy error:', err);
+            });
+        });
+    });
+
+</script>
+
+
+<script>
+
+    function uploadprofiepic(event) {
+
+        const fileInput = event.target;
+        if (fileInput!=null)
+        if (fileInput.files && fileInput.files[0]) {
+
+            const formData = new FormData();
+            formData.append('profileimage', fileInput.files[0]);
+            fetch('/user/profile/profileImage', {
+                method: 'put',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': getCsrfToken(),
+                },
+            })
+                .then(res => {
+                    if (res.ok) {
+                        console.log("File uploaded successfully");
+                        window.location.reload();
+                    } else {
+                        console.error("Upload failed");
+                    }
+                })
+                .catch(err => console.error('Error uploading files', err));
+        }
+    }
+
+    function changePassword() {
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const passwordWarning = document.getElementById('passwordWarning');
+
+        // Clear previous warning messages
+        passwordWarning.textContent = "";
+
+        // Validate form inputs
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            passwordWarning.textContent = "All password fields are required.";
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            passwordWarning.textContent = "Passwords do not match.";
+            return;
+        }
+
+        // Additional password complexity checks can be added here if needed
+
+        const Data = new FormData();
+        Data.append('oldPassword', oldPassword);
+        Data.append('newPassword', newPassword);
+
+        fetch('/user/profile/changePassword', {
+            method: 'PUT',
+            body: Data,
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken(),
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Password change response:", data);
+                if (data.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Password changed successfully",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    }).then(() => {
+                        // Optionally, you can redirect or reload the page after a successful password change
+                        // window.location.reload();
+                    });
+                    $('#exampleModal').modal('hide');
+                } else {
+                    // Handle unsuccessful password change (e.g., display an error message)
+                    passwordWarning.textContent = data.message || "Password change failed.";
+                }
+            })
+            .catch(error => {
+                console.error("Error during password change:", error);
+                // Handle other errors (e.g., network issues)
+                passwordWarning.textContent = "An error occurred during password change.";
+            });
+    }
+
+
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').content;
+    }
+
+
+
+
+</script>
+
+
+</body>
+</html>
+
+
+

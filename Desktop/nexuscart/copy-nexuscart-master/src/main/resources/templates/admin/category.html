@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  >
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>admin panel</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/admin/css/bootstrap.min.css}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <!----css3---->
+    <link rel="stylesheet" th:href="@{/admin/css/custom.css}">
+    <!--font awsom-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <!--google fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+    <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+
+</head>
+<body>
+
+
+<div class="wrapper">
+
+
+    <div class="body-overlay"></div>
+
+    <!-------------------------sidebar------------>
+    <!-- Sidebar  -->
+    <div th:replace="fragments/sidebarFragment :: sidebar-fragment"></div>
+
+
+
+
+
+
+    <!--------page-content---------------->
+
+    <div id="content">
+
+
+
+
+        <!--------main-content------------->
+        <!--catogory list-->
+        <div style="margin-left: 30px" th:if="${categoryexist}">
+            <p style="color: red" th:text="${categoryexist}"></p>
+        </div>
+        <div th:if="${inputError}" style="margin-left: 30px">
+            <p style="color: red" th:text="${inputError}"></p>
+        </div>
+        <div th:if="${categoryAddSuccess}" style="margin-left: 30px">
+            <p style="color: green" th:text="${categoryAddSuccess}"></p>
+        </div>
+        <div th:if="${delmessage}" style="margin-left: 30px">
+            <p style="color: red" th:text="${delmessage}"></p>
+        </div>
+
+        <h5 style="margin-left: 50px;font-family: sans-serif">Category List </h5>
+
+
+        <table class="table table-bordered" style="width: 500px;margin-left: 50px;">
+            <thead>
+            <tr>
+
+                <th scope="col">Category Name</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody th:each="category : ${categories}">
+            <tr>
+                <td th:text="${category.categoryName}"></td>
+                <td>
+                    <form class="d-inline" method="post" th:action="@{'/admin/category/deleteCategory/' + ${category.categoryId}}">
+                        <span class=""><button class="delete btn" data-target="#deleteModal" data-toggle="modal" id="categoryDelee" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                  </button></span>
+                    </form>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+
+        <!-- modal add catogery-->
+        <button style="margin-left: 30px" type="button" class="btn btn-primary" data-toggle="modal" data-target="#categoryModal">
+            Add Category
+        </button>
+
+        <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form inside the modal -->
+                        <form th:action="@{category/saveCategory}" method="post">
+                            <div class="form-group">
+                                <label for="categoryName">Category Name:</label>
+                                <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Category</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Modal HTML -->
+
+        <!--end of category->
+
+<!-       <!-barnd starting->-->
+        <div style="margin-left: 30px" th:if="${brandexist}">
+            <p style="color: red" th:text="${brandexist}"></p>
+        </div>
+        <div th:if="${brandinputError}" style="margin-left: 30px">
+            <p style="color: red" th:text="${brandinputError}"></p>
+        </div>
+        <div th:if="${brandAddSuccess}" style="margin-left: 30px">
+            <p style="color: green" th:text="${brandAddSuccess}"></p>
+        </div>
+        <div th:if="${delmessagebrand}" style="margin-left: 30px">
+            <p style="color: red" th:text="${delmessagebrand}"></p>
+        </div>
+
+        <h5 style="margin-left: 50px;font-family: sans-serif">Brand List</h5>
+
+
+        <table class="table table-bordered" style="width: 500px;margin-left: 50px;">
+            <thead>
+            <tr>
+
+                <th scope="col">Brand Name</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody th:each="brand:${brands}">
+            <tr>
+                <td th:text="${brand.brandName}">
+
+                </td>
+                <td>
+                    <form class="d-inline" method="post" th:action="@{'/admin/category/deletebrand/' + ${brand.brandId}}">
+                        <span class=""><button class="delete btn" data-target="#deleteModal" data-toggle="modal" id="categoryDelete" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                  </button></span>
+                    </form>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+
+        <!-- modal add catogery-->
+        <button style="margin-left: 30px" type="button" class="btn btn-primary" data-toggle="modal" data-target="#brandModal">
+            Add Brand
+        </button>
+
+        <div class="modal fade" id="brandModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabe">Add Brand</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form inside the modal -->
+                        <form th:action="@{/admin/category/addbrand}" method="post">
+                            <div class="form-group">
+                                <label for="brandName">Brand Name:</label>
+                                <input type="text" class="form-control" id="brandName" name="brandName" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Brand</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--end brand-->
+
+
+
+
+
+
+
+
+
+
+        <!---footer---->
+
+
+    </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+
+
+<script th:src="@{/admin/js/jquery-3.3.1.slim.min.js}"></script>
+<script th:src="@{/admin/js/popper.min.js}"></script>
+<script th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>
+
+<!-- Include jQuery only once -->
+<!--<script th:src="@{/admin/js/jquery-3.3.1.min.js}"></script>-->
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $(".xp-menubar").on('click',function(){
+            $('#sidebar').toggleClass('active');
+            $('#content').toggleClass('active');
+        });
+
+        $(".xp-menubar,.body-overlay").on('click',function(){
+            $('#sidebar,.body-overlay').toggleClass('show-nav');
+        });
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

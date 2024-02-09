@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+
+    <!-- css -->
+    <link rel="stylesheet" th:href="@{/user/home/assets/style.css}" type="text/css">
+    <!-- Asom font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+
+</head>
+
+
+<body>
+<header th:replace="fragments/navbar :: header-nav"></header>
+<section class="h-100 gradient-custom shadow">
+    <div class="container py-5 h-100  ">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card shadow" style="border-radius: 10px;">
+                    <div class="card-header px-4 py-5">
+                        <h5 class=" mb-0 " style="font-family:Georgia, 'Times New Roman', Times, serif;">Thanks for Shopping with us : <span style="color:#014122;font-weight:600;" th:text="${orders.address.name}"><</span></h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <p class="lead fw-normal mb-0" style="color:red;font-family: 'Times New Roman', Times, serif;">Receipt</p>
+                            <!-- <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p> -->
+                        </div>
+                        <div class="card shadow-0 border mb-4">
+                            <div class="card-body">
+                                <div th:each="productItem : ${orders.orderProducts}" class="row" style="font-family: 'Times New Roman', Times, serif;">
+                                    <div class="col-md-2">
+                                        <img th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/'+${productItem.product.imagesPath[0]}}"
+                                             class="img-fluid" alt="Phone">
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p th:text="${productItem.product.productName}"  class=" mb-0"> </p>
+                                    </div>
+
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class=" mb-0 small">Qty <span th:text="${productItem.quantity}"></span></p>
+                                    </div>
+
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class=" mb-0 small">Price:<span th:text="${productItem.product.price}"></span></p>
+                                    </div>
+
+                                    <h5 th:if="${orders.status eq 'return'}" style="color: brown;">Product Return</h5>
+
+
+                                    <div  th:if="${orders.status eq 'Delivered' }" class="col-md-2 text-center d-flex justify-content-center align-items-center">
+
+                                        <a th:href="@{/user/returnOrder(orderId=${orders.orderId})}"> <button class="btn small btn-danger"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                                                                                                              id="returnOrderBtn" data-item-id="<%= x._id %> " >Return</button></a>
+                                    </div>
+
+
+                                    <div th:if="${orders.status !='Delivered' and orders.status != 'Cancelled' and orders.status != 'Return Processing' and orders.status != 'Returned'}" class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <a th:href="@{/user/cancelOrder(orderId=${orders.orderId})}"><button class="btn small btn-danger"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .80rem;" id="cancelOrderBtn" >Cancel Order</button></a>
+                                    </div>
+
+
+                                </div>
+
+                                <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-2">
+                                        <p class="text-muted mb-0 small">Track Order</p>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="progress" style="height: 6px; border-radius: 16px;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 th:style="'width: ' + ${orderStatusPercentage} + '%; border-radius: 16px; background-color: #0f000b;'"
+                                                 aria-valuenow="${orderStatusPercentage}" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-around mb-1">
+                                            <p class="text-muted mt-1 mb-0 small ms-xl-5"  th:text="${orders.status}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                        <!-- <div class="d-flex justify-content-between pt-2">
+                          <p class="fw-bold mb-0">Order Details</p>
+                          <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> $898.00</p>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-2">
+                          <p class="text-muted mb-0">Invoice Number : 788152</p>
+
+                        </div>-->
+                        <div style="font-family: 'Times New Roman', Times, serif;">
+                            <div class="d-flex justify-content-between" >
+                                <p class=" mb-0">Order ID : <span th:text="${orders.orderId}"></span></p>
+                                <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p> -->
+                            </div>
+
+
+                            <h5 style="text-decoration: underline;">Order Address</h5>
+                            <div class="d-flex justify-content-between pt-2">
+                                <p th:text="${orders.address.name}" class=" mb-0"></p>
+
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <p th:text="${orders.address.address}" class=" mb-0"></p>
+
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <p th:text="${orders.address.city}" class=" mb-0"></p>
+
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <p  th:text="${orders.address.pin}" class="mb-0"></p>
+
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <p th:text="${orders.address.state}" class="mb-0"></p>
+
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <p th:text="${orders.address.mobile}" class=" mb-0"></p>
+
+                            </div>
+                            <a th:href="@{/user/generate(id=${orders.orderId})}"><button class="btn-primary" style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;  cursor: pointer;  transition: background-color 0.3s;">Download Invoice</button></a>
+                        </div>
+                    </div>
+                    <div class="card-footer border-0 px-4 py-5"
+                         style="background-color: #014122; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                        <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0" style="font-family: 'Times New Roman', Times, serif;">Total   Amount :
+                            <span class=" h3 mb-0 ms-2">  ₹<span th:text="${orders.totalAmount}"></span></span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Add this to your HTML file before the closing body tag -->
+<div class="modal fade" id="returnOrderModal" tabindex="-1" role="dialog" aria-labelledby="returnOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnOrderModalLabel">Return Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="returnReason">Reason:</label>
+                    <input type="text" class="form-control" id="returnReason" placeholder="Enter reason" required>
+                </div>
+                <div class="form-group">
+                    <label for="returnDescription">Description:</label>
+                    <textarea class="form-control" id="returnDescription" placeholder="Enter description" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="confirmReturnBtn">Confirm Return</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"
+></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-pzjw8f+ua/C56KZ8VDvV7aekbcevNvxxD+3NL4cb4tD1/dz5FFv6gBbuJTj5CBo6" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-svNtnz0Tz9sKBRimmb3R01mZmEx6LJK/JimRl+oHaWHxEGN6e1SHmoKtTWHc5PZ2" crossorigin="anonymous"></script>
+
+</body>
+</html>

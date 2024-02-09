@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title> Coupon </title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+</head>
+
+
+<body class="bg-light">
+<div class="wrapper">
+<div th:replace="fragments/sidebarFragment :: sidebar-fragment"></div>
+
+
+  <div style="margin-left: 20%" id="content">
+
+    <p style="color: red" th:if="${success}" th:text="${success}"></p>
+
+
+<div class="container mt-5">
+  <button style="margin-bottom: 50px;" class="btn btn-primary" data-toggle="modal" data-target="#addModal"><i class="fas fa-plus"></i> Add Coupon</button>
+  <!-- Coupon Card -->
+  <div class="row">
+    <!-- Coupon Cards -->
+    <div th:each="coupon :${coupons}" class="col-md-4 mb-4">
+      <div class="card" style="max-width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title"><span th:type="${coupon.couponName}"></span></h5>
+          <h6 class="card-subtitle mb-2 text-muted">Discount: <span th:text="${coupon.discountPercentage}"></span>%</h6>
+          <p class="card-text">Minimum Amount: ₹<span th:text="${coupon.minimumAmount}"></span></p>
+          <p class="card-text">Coupon expireDate:<span th:text="${coupon.expirationDate}"></span></p>
+<!--          <a href="#" class="card-link" data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i> Edit</a>-->
+          <a href="#" class="card-link" th:attr="data-target='#editModal-' + ${coupon.couponId}" data-toggle="modal"><i class="fas fa-edit"></i> Edit</a>
+          <a th:href="@{/admin/coupon/deleteCoupon/{id}(id=${coupon.couponId})}" href="#" class="card-link text-danger" id="deleteButton">
+            <i class="fas fa-trash-alt"></i> Delete
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Coupon Cards go here -->
+
+  </div>
+
+  <!-- Edit Modal -->
+<!--  <div class="modal" id="editModal" tabindex="-1" role="dialog">-->
+  <div th:each="coupon :${coupons}" th:id="'editModal-' + ${coupon.couponId}" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Coupon</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Edit form goes here -->
+          <form  th:action="@{/admin/coupon/updateCoupon}" method="post">
+            <div class="form-group">
+              <input type="hidden" name="couponId" th:value="${coupon.couponId}">
+              <label for="editCouponName">Coupon Name</label>
+              <input th:value="${coupon.couponName}" name="couponName" type="text" class="form-control" id="editCouponName" placeholder="Enter coupon name" required>
+            </div>
+            <div class="form-group">
+              <label for="editCouponCode">Coupon Code</label>
+              <input th:value="${coupon.couponCode}" name="couponCode" type="text" class="form-control" id="editCouponCode" placeholder="Enter coupon Code" required>
+            </div>
+            <div class="form-group">
+              <label for="editDiscount">Discount Percentage</label>
+              <input th:value="${coupon.discountPercentage}" name="discountPercentage" type="text" class="form-control" id="editDiscount" placeholder="Enter discount percentage" required>
+            </div>
+            <div class="form-group">
+              <label for="editMinAmount">Minimum Amount</label>
+              <input th:value="${coupon.minimumAmount}"   name="minimumAmount" type="text" class="form-control" id="editMinAmount" placeholder="Enter minimum amount" required>
+            </div>
+            <div class="form-group">
+              <label for="editExpiryDate">Expiration Date</label>
+              <input th:value="${coupon.expirationDate}"  name="expirationDate" type="date" class="form-control" id="editExpiryDate" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Coupon</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this coupon?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Coupon Modal -->
+  <div class="modal" id="addModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Coupon</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Add form goes here -->
+          <div id="couponCodeErrord" style="color: red;"></div>
+          <form id="addCouponForm" th:action="@{/admin/coupon/add-coupon}" method="post">
+            <div class="form-group">
+              <label for="addCouponName">Coupon Name</label>
+              <input name="couponName" type="text" class="form-control" id="addCouponName" placeholder="Enter coupon name" required>
+            </div>
+            <div class="form-group">
+              <label for="addCouponCode">Coupon Code</label>
+              <input name="couponCode" type="text" class="form-control" id="addCouponCode" placeholder="Enter coupon Code" required>
+            </div>
+            <div class="form-group">
+              <label for="addDiscount">Discount Percentage</label>
+              <input name="discountPercentage" type="text" class="form-control" id="addDiscount" placeholder="Enter discount percentage"  min="1" max="100" required>
+            </div>
+            <div class="form-group">
+              <label for="addMinAmount">Minimum Amount</label>
+              <input name="minimumAmount" type="number" class="form-control" id="addMinAmount" placeholder="Enter minimum amount" required>
+            </div>
+            <div class="form-group">
+              <label for="addExpiryDate">Expiration Date</label>
+              <input name="expirationDate" type="date" class="form-control" id="addExpiryDate" required>
+            </div>
+            <button type="submit" class="btn btn-success">Add Coupon</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Coupon Button -->
+
+</div>
+  </div>
+</div>
+<!-- Bootstrap Toast -->
+<div class="toast" id="deleteToast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+  <div class="toast-header">
+    <strong class="mr-auto">Confirmation</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Coupon deleted successfully.
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#deleteButton').click(function () {
+      // Send an AJAX request to delete the coupon
+      $.ajax({
+        type: 'POST',
+        url: '/admin/coupon/deleteCoupon/' + coupon.couponId,
+        success: function (response) {
+          console.log(response);
+          // Show the toast on successful deletion
+          $('#deleteToast').toast('show');
+          // Optionally, you can handle UI updates (e.g., remove the deleted coupon from the page)
+        },
+        error: function (error) {
+          console.error('Error deleting coupon:', error);
+        }
+      });
+    });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('addCouponForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const couponCode = document.getElementById('addCouponCode').value;
+
+      // Make a fetch request to check if the coupon code already 6
+      fetch(`/admin/coupon/checkCouponCode/${couponCode}`)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+
+              })
+              .then(data => {
+                if (data === true) {
+                  // Coupon code already exists, show an error message
+                  document.getElementById('couponCodeError').textContent = 'Coupon code already exists.';
+                } else {
+                  // Coupon code is valid, submit the form
+                  document.getElementById('addCouponForm').submit();
+                }
+              })
+              .catch(error => {
+                console.error('Error checking coupon code:', error);
+              });
+    });
+  });
+</script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/your-font-awes4155555eome-kit.js" crossorigin="anonymous"></script>
+</body>
+</html>

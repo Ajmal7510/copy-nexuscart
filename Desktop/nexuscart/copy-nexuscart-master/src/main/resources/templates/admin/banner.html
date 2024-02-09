@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BannerController</title>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .cropper-container {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/sidebarFragment :: sidebar-fragment">
+
+</div>
+
+<div id="content" style="margin-left: 262px">
+    <h2>Banner Management</h2>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBannerModal">
+        Add Banner
+    </button>
+
+    <table class="table table-bordered mt-4">
+        <thead class="thead-light">
+        <tr>
+            <th>Description</th>
+            <th>Image Paths</th>
+            <th>Action</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="banner:${banners}">
+            <td><span th:text="${banner.description}"></span></td>
+            <td><img width="75px" height="50px" th:src="@{'/banner/' + ${banner.imagesPath[0]}}" /></td>
+            <td>
+                <div th:if="${not banner.isActive}">
+                    <button class="btn btn-success" th:onclick="'activateBanner(\'' + ${banner.bannerId} + '\')'">Activate</button>
+                </div>
+                <div th:if="${banner.isActive}">
+                    <p>This is Active Banner</p>
+                </div>
+            </td>
+            <td>
+                <input type="hidden" th:value="${banner.bannerId}" id="bannerId">
+                <div th:if="${not banner.isActive}">
+                    <button class="btn btn-danger" th:onclick="'deleteBanner(\'' + ${banner.bannerId} + '\')'">delete</button>
+                </div>
+                <div th:if="${banner.isActive}">
+                    <p>Active Banner cannot be deleted</p>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="addBannerModal" tabindex="-1" role="dialog" aria-labelledby="addBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBannerModalLabel">Add Banner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/banner/addbanner}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="bannerDescription">Description</label>
+                        <input name="description" type="text" class="form-control" id="bannerDescription" placeholder="Enter description">
+                    </div>
+                    <div class="form-group">
+                        <label for="image1">Image 1</label>
+                        <input name="images" type="file" class="form-control-file" id="image1" accept="image/*" onchange="initCropper('image1', 'imagePreview1')">
+                        <div id="imagePreview1" class="cropper-container"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="image2">Image 2</label>
+                        <input name="images" type="file" class="form-control-file" id="image2" accept="image/*" onchange="initCropper('image2', 'imagePreview2')">
+                        <div id="imagePreview2" class="cropper-container"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="image3">Image 3</label>
+                        <input name="images" type="file" class="form-control-file" id="image3" accept="image/*" onchange="initCropper('image3', 'imagePreview3')">
+                        <div id="imagePreview3" class="cropper-container"></div>
+                    </div>
+                    <button  type="button" onclick="addBanner()" class="btn btn-primary" >Add Banner</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Cropper.js script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<script>
+    let cropperInstances = {}; // Global variable to store Cropper instances
+
+    function activateBanner(bannerId) {
+        const url = `/admin/banner/activate/${bannerId}`;
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                // You may send additional data if needed
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data if needed
+                alert(`Banner with ID ${bannerId} activated successfully`);
+                // Reload the page after activating the banner
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                window.location.reload();
+            });
+    }
+
+    function deleteBanner(bannerId) {
+        const url = `/admin/banner/delete/${bannerId}`;
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                // You may send additional data if needed
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data if needed
+                alert(`Banner with ID ${bannerId} deleted successfully`);
+                // Reload the page after deleting the banner
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                window.location.reload();
+            });
+    }
+
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').content;
+    }
+
+    function initCropper(inputId, containerId) {
+        const input = document.getElementById(inputId);
+        const container = document.getElementById(containerId);
+        const file = input.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                container.innerHTML = '<img src="' + e.target.result + '" id="' + containerId + '-image" class="image-preview">';
+                // Initialize Cropper.js
+                cropperInstances[containerId] = new Cropper(document.getElementById(containerId + '-image'), {
+                    aspectRatio: 16 / 9,
+                    viewMode: 2,
+                    autoCropArea: 1,
+                });
+            };
+            reader.readAsDataURL(file);
+        } else {
+            container.innerHTML = '';
+        }
+    }
+
+    // function addBanner() {
+    //     // Iterate through cropperInstances and get cropped data for each image
+    //     for (const key in cropperInstances) {
+    //         const cropper = cropperInstances[key];
+    //         // Get the cropped data
+    //         const croppedData = cropper.getData();
+    //
+    //         // Create a hidden input field for each image and append it to the form
+    //         const hiddenInput = document.createElement('input');
+    //         hiddenInput.type = 'hidden';
+    //         hiddenInput.name = 'croppedImages[]'; // Adjust the name as needed
+    //         hiddenInput.value = JSON.stringify(croppedData); // Convert the data to a string if needed
+    //         document.querySelector('form').appendChild(hiddenInput);
+    //     }
+    //
+    //     // Now, submit the form
+    //     document.querySelector('form').submit();
+    //
+    //     // Close the modal after adding the banner
+    //     $('#addBannerModal').modal('hide');
+    // }
+
+
+
+    function addBanner() {
+        // Create a FormData object to store form data, including cropped images
+        const formData = new FormData(document.querySelector('form'));
+
+        // Iterate through cropperInstances and get cropped data for each image
+        for (const key in cropperInstances) {
+            const cropper = cropperInstances[key];
+            // Get the cropped data as a Blob
+            const croppedBlob = cropper.getCroppedCanvas().toBlob((blob) => {
+                // Append the Blob to the FormData object
+                formData.append('croppedImages', blob, 'croppedImage.png');
+            }, 'image/png');
+        }
+            document.querySelector('form').submit();
+
+    }
+
+</script>
+</body>
+</html>

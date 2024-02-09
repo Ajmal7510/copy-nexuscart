@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link rel="stylesheet" th:href="@{login-signup/assets/css/styles.css}">
+
+    <title>Login form - Bedimcode</title>
+</head>
+<body>
+<div class="login" style="background: linear-gradient(to right top, #7aaab2, #67a7b0, #52a5ad, #38a2a9, #009fa4);">
+    <form th:action="@{/signup}" th:object="${userDto}" method="post" class="login__form">
+        <h1 class="login__title"> Sign Up </h1>
+
+        <div th:if="${UserAlredyExist}">
+            <p style="color: red" th:text="${UserAlredyExist}"></p>
+        </div>
+
+        <div class="login__inputs">
+            <div class="login__box">
+                <input name="name" type="text" placeholder="Name" required class="login__input">
+            </div>
+
+            <div class="login__box">
+                <input name="email" type="email" placeholder="Email ID" required class="login__input">
+                <i class="ri-mail-fill"></i>
+            </div>
+
+            <div class="login__box">
+                <input name="phoneNumber" type="number" pattern="[0-9]{10}" placeholder="Phone Number (10 digits)" required class="login__input">
+            </div>
+
+            <div class="login__box">
+                <input type="password" placeholder="Password" name="password" id="password" required class="login__input">
+                <i class="ri-lock-2-fill"></i>
+
+            </div>
+            <span id="password-strength"></span>
+
+            <div class="login__box">
+                <input type="password" placeholder="Confirm Password" name="confirmPassword" id="confirmPassword" required class="login__input">
+                <i class="ri-lock-2-fill"></i>
+            </div>
+        </div>
+
+        <button type="submit" class="login__button">Sign Up</button>
+
+        <br>
+
+        <div class="login__register">
+            Have an account? <a href="/login">Login</a>
+        </div>
+    </form>
+
+    <script>
+        document.getElementById("password").addEventListener("input", function() {
+            validatePassword();
+        });
+
+        document.getElementById("confirmPassword").addEventListener("input", function() {
+            validatePassword();
+        });
+
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var passwordStrength = document.getElementById("password-strength");
+
+            // Password strength validation logic
+            var strength = 0;
+
+            if (password.match(/[a-z]+/)) {
+                strength += 1;
+            }
+            if (password.match(/[A-Z]+/)) {
+                strength += 1;
+            }
+            if (password.match(/[0-9]+/)) {
+                strength += 1;
+            }
+            if (password.match(/[$@#&!]+/)) {
+                strength += 1;
+            }
+
+            if (password.length >= 8) {
+                strength += 1;
+            }
+
+            // Display password strength
+            if (strength === 0) {
+                passwordStrength.innerHTML = "";
+            } else {
+                passwordStrength.innerHTML = "Password Strength: " + strength + "/5";
+            }
+
+            // Confirm password match
+            if (password !== confirmPassword) {
+                document.getElementById("confirmPassword").setCustomValidity("Passwords do not match");
+            } else {
+                document.getElementById("confirmPassword").setCustomValidity("");
+            }
+        }
+    </script>
+</div>
+</body>
+</html>
