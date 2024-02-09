@@ -42,6 +42,12 @@ public class ProductController {
 
     @Autowired
    private CategoryOfferRepository categoryOfferRepository;
+    
+    @Autowired
+    private AmazonS3 amazonS3Clint;
+
+    @Value("${s3.bucketName}")
+    private String bucketName;
 
 
     @GetMapping("")
@@ -102,13 +108,31 @@ String UPLOAD_DIR = "/home/ubuntu/ecommerce/src/main/resources/static/uploads/";
         int i=0;
 
 
-        for (MultipartFile file : files) {
-            String UUI = UUID.randomUUID().toString();
-            product.getImagesPath()[i] = UUI+productDTO.getProductImages()[i].getOriginalFilename();
-            file.transferTo(new File(UPLOAD_DIR +UUI+ file.getOriginalFilename()));
-            i++;
-        }
+        // for (MultipartFile file : files) {
+        //     String UUI = UUID.randomUUID().toString();
+        //     product.getImagesPath()[i] = UUI+productDTO.getProductImages()[i].getOriginalFilename();
+        //     file.transferTo(new File(UPLOAD_DIR +UUI+ file.getOriginalFilename()));
+        //     i++;
+        // }
 
+
+             // Save the product images to Amazon S3
+        for (MultipartFile file : files) {
+            String uuid = UUID.randomUUID().toString();
+            String key = uuid + file.getOriginalFilename();
+
+            try {
+                // Upload the file to S3
+                amazonS3Clint.putObject(new PutObjectRequest(bucketName, key, file.getInputStream(), new ObjectMetadata()));
+
+                // Set the S3 URL or key in your product entity
+                product.getImagesPath()[i] = key;
+                i++;
+            } catch (IOException e) {
+                // Handle the exception (e.g., log or throw a custom exception)
+                e.printStackTrace();
+            }
+        }
 
 
         // Set images path (you might want to modify this based on your actual logic)
