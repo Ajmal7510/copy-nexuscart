@@ -106,7 +106,7 @@
               <div class="col-md-6 my-auto">
                 <a th:href="@{'/user/product-details/'+ ${item.product.productID}}">
                   <label class="product-name">
-                    <img th:src="@{'/uploads/'+${item.product.imagesPath[0]}}" style="width: 50px; height: 50px" alt="">
+                    <img th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/'+${item.product.imagesPath[0]}}" style="width: 50px; height: 50px" alt="">
                     <span th:text="${item.product.productName}"></span>
                   </label>
                 </a>
