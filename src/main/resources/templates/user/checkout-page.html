@@ -208,7 +208,7 @@
                             <div class="d-flex align-items-center mb-4" th:each="item : ${items}">
                                 <div class="me-3 position-relative">
                                     <img class="img-sm rounded border" style="height: 60px; width: 60px;"
-                                         th:src="@{'/uploads/' + ${item.product.getImagesPath[0]}}" />
+                                         th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/' + ${item.product.getImagesPath[0]}}" />
                                 </div>
                                 <div class="">
                                     <a class="nav-link fw-semibold" href="#"
