@@ -200,7 +200,7 @@
 
       <td>
 
-        <img th:src="@{'/uploads/' + ${orderProduct.product.imagesPath[0]}}" alt="Product A Image"
+        <img th:src="@{'https://spring-ecommerce.s3.eu-north-1.amazonaws.com/' + ${orderProduct.product.imagesPath[0]}}" alt="Product A Image"
              width="50" height="50">
         <span th:text="${orderProduct.product.productName}">Product Name</span>
       </td>
